@@ -1,0 +1,9 @@
+<nav class="menu">
+	<a href="/">@(Home)</a>
+@{foreach m in global.blogs}
+	@{if m.count}
+	<a href="@{sitemap_url('category', m.linker)}">@{m.name}</a>
+	@{fi}
+@{end}
+	<a href="@{sitemap_url('contact')}">@(Contact)</a>
+</nav>

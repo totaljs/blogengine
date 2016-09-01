@@ -1,0 +1,19 @@
+{
+  "name": "BlogEngine",
+  "description": "Simple and powerful blog engine written in total.js / node.js.",
+  "version": "1.0.0",
+  "main": "release.js",
+  "dependencies": {
+    "total.js": "latest",
+    "marked": "latest"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "blog",
+    "engine"
+  ],
+  "author": "Peter Širka",
+  "license": "MIT"
+}

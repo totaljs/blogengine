@@ -1,0 +1,305 @@
+<div class="filter">
+	<div class="container">
+		<nav class="buttons">
+			<a href="javascript:void(0)" data-component="click" data-component-path="blogs_new"><i class="fa fa-plus-circle"></i><span>@(Add blog)</span></a>
+		</nav>
+		<div class="caption"><span class="fa fa-pencil mr5"></span> @(Blogs)</div>
+		<div class="row">
+			<div class="col-md-4 col-sm-6 m">
+				<div data-component="textbox" data-component-path="blogs.filter.search" data-placeholder="@(Search blogs ...)" data-control-icon="fa-search"></div>
+				<div class="help" data-component="template" data-component-path="blogs.grid"><script type="text/html">{{ count | pluralize(@('# items','# item','# items','# items')) }} / {{ pages | pluralize(@('# pages','# page','# pages','# pages')) }}</script></div>
+			</div>
+			<div class="col-md-4 col-sm-6 m">
+				<div data-component="dropdown" data-component-path="blogs.filter.category" data-source="blogs.categories" data-empty="@(All blogs)" data-source-value="name"></div>
+				<div>&nbsp;</div>
+			</div>
+			<div class="col-md-4 col-sm-6 m">
+				<div data-component="dropdown" data-component-path="blogs.filter.tag" data-source="blogs.tags" data-empty="@(All tags)" data-source-value="linker"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div data-component="grid" data-component-path="blogs.grid" data-pagination-path="blogs.filter.page" data-component-id="blogs.grid" data-max="auto" data-page="@(Page: #)" data-pages="@(# pages,# page,# pages,# pages)" data-items="@(# items,# item,# items,# items)" data-empty="@(Database does not contain any data.)">
+		<script type="text/html">
+		<tr>
+			<td>{{ if picture }}<span class="fa fa-photo mr5"></span>{{ fi }}{{ if language }}<span class="fs11 silver mr5">{{ language }}</span>{{ fi }}{{ if draft }}<span class="badge badge-red mr5">@(draft)</span>{{ fi }}{{ name }}</td>
+			<td style="width:150px" class="silver fs11 hidden-xs"><span class="fa fa-folder mr5"></span>{{ category }}</td>
+			<td style="width:60px" class="fs11 hidden-xs ui-right"><span class="blogs-stats" data-id="{{ id }}">...</span><span class="fa fa-eye ml5"></span></td>
+			<td style="width:60px" class="fs11 hidden-xs ui-right{{ if countcomments }} red b{{ fi }}">{{ countcomments }}<span class="fa fa-comments-o ml5"></span></td>
+			<td style="width:100px" class="silver ui-right hidden-xs">{{ datecreated | format('@(yyyy-MM-dd)') }}</td>
+			<td style="width:80px" class="ui-right">
+				<button name="edit" title="@(Edit)"><span class="fa fa-pencil"></span></button>
+				<button name="remove" title="@(Remove)"><span class="fa fa-times"></span></button>
+			</td>
+		</tr>
+		</script>
+	</div>
+</div>
+
+<div data-component="form" data-title="@(Blog form)" data-component-path="common.form" data-if="value === 'blogs'" data-width="980px" data-component-id="blogs.form" data-autocenter="false">
+	<div class="padding">
+		<div class="row">
+			<div class="col-md-12">
+				<div data-component="textbox" data-component-path="blogs.form.name" data-required="true">@(Name)</div>
+				<div class="help"><i class="fa fa-lightbulb-o"></i>@(Use shorter name for your blog.)</div>
+			</div>
+		</div>
+	</div>
+	<div class="padding bg-smoke">
+		<div class="row">
+			<div class="col-md-6 m">
+				<div data-component="textarea" data-component-path="blogs.form.perex" data-required="true">@(Perex)</div>
+				<div class="help">@(Please create a small description of your blog. This text will be used as a description in search engines.)</div>
+				<br />
+				<div data-component="dropdown" data-component-path="blogs.form.category" data-source="blogs.categories" data-empty="" data-source-value="name" data-required="true">@(Category)</div>
+				<br />
+				<div class="b red inline mr15" data-component="checkbox" data-component-path="blogs.form.draft">@(This blog is draft)</div>
+				<div class="inline" data-component="checkbox" data-component-path="blogs.form.comments">@(Allow comments)</div>
+			</div>
+			<div class="col-md-6">
+				<div data-component="pictureupload" data-component-path="blogs.form.picture" data-width="800" data-height="400" data-icon="fa-camera" data-path="/download/{0}">@(Picture)</div>
+				<div class="help">@(Blog engine stores picture in 800x400px dimension.)</div>
+			</div>
+		</div>
+	</div>
+	<hr style="margin:0 0 8px" />
+	<div class="padding">
+		<ul class="tabmenu" data-component="tabmenu" data-component-path="blogs.form.tab">
+			<li data-value="edit">@(Edit mode)</li>
+			<li data-value="preview">@(Preview)</li>
+		</ul>
+		<div data-component="visible" data-component-path="blogs.form.tab" data-if="value === 'edit'" class="hidden">
+			<div data-component="codemirror" data-component-path="blogs.form.body" data-type="markdown" data-height="100%" data-required="true" data-component-id="blogs-body">@(Body)</div>
+			<div class="help"><i class="fa fa-cloud-upload mr5"></i>@(You can upload files via drag & drop.)</div>
+			<br />
+			<div data-component="textboxtags" data-component-path="blogs.form.tags">@(Tags)</div>
+		</div>
+		<div data-component="visible" data-component-path="blogs.form.tab" data-if="value === 'preview'" class="hidden markdown" id="blogs-preview"></div>
+	</div>
+	<br />
+	<div data-component="error" data-component-path="blogs.response"></div>
+	<div class="ui-form-buttons">
+		<div data-component="validation" data-component-path="blogs.form">
+			<button name="submit">@(SUBMIT)</button>
+		</div>
+		<button name="cancel">@(Cancel)</button>
+	</div>
+</div>
+
+<script>
+
+	var blogs = {};
+
+	blogs.filter = {};
+	blogs.filter.page = 1;
+	blogs.grid = {};
+	blogs.form = {};
+	blogs.categories = [];
+	blogs.tags = [];
+	blogs.templates = [];
+	blogs.response = null;
+	blogs.category = {};
+	blogs.subcategory = {};
+	blogs.subcategory.visible = false;
+
+	ON('#blogs.grid', function(component) {
+
+		// Max items per page
+		blogs.filter.max = component.max;
+		blogs_refresh_codelists();
+		blogs_refresh(true);
+
+		component.click = function(index, row, button) {
+			switch ($(button).attr('name')) {
+				case 'edit':
+					blogs_edit(row.id);
+					break;
+				case 'remove':
+					FIND('confirm').confirm('@(Do you want to remove) <b>{0}</b>?'.format(row.name), ['@(OK)', '@(Cancel)'], function(index) {
+						if (index)
+							return;
+						var loading = FIND('loading');
+						AJAX('DELETE {0}/api/blogs/'.format(managerurl), { id: row.id }, function() {
+							if (isError(arguments))
+								return;
+							loading.hide(500);
+							blogs_refresh();
+						});
+					});
+					break;
+			}
+		};
+	});
+
+	// Watch for changes in blogs filter
+	WATCH('blogs.filter.*', function(path, value) {
+		if (NOTMODIFIED('blogs.filter', blogs.filter))
+			return;
+		blogs_refresh(path !== 'blogs.filter.page');
+	});
+
+	ON('#blogs.form', function(component) {
+		component.submit = function(hide) {
+			var loading = FIND('loading').show();
+			AJAX('POST {0}/api/blogs/'.format(managerurl), blogs.form, function(response) {
+
+				if (isError(arguments))
+					return;
+
+				loading.hide();
+
+				// Error handling
+				SET('blogs.response', response);
+				if (response instanceof Array)
+					return;
+
+				hide();
+				blogs_refresh();
+				success();
+			});
+		};
+	});
+
+	function blogs_edit(id) {
+		var loading = FIND('loading').show();
+		AJAX('GET {0}/api/blogs/{1}/'.format(managerurl, id), function(response) {
+
+			if (isError(arguments))
+				return;
+
+			loading.hide(500);
+
+			// Error prevention
+			if (response instanceof Array) {
+				FIND('message').warning(response[0].error);
+				return;
+			}
+
+			response.draft_old = response.draft;
+			SET('blogs.form', $.extend({ $index: index, tab: 'edit' }, response), true);
+			SET('blogs.response', null);
+			SET('common.form', 'blogs');
+		});
+	}
+
+	function blogs_new() {
+		SET('blogs.form', { tab: 'edit', draft: true, draft_old: true, comments: true }, true);
+		SET('blogs.response', null);
+		SET('common.form', 'blogs');
+	}
+
+	function blogs_category() {
+		SET('blogs.category', {}, true);
+		SET('common.form', 'blogs.category');
+	}
+
+	// Method refreshes categories
+	function blogs_refresh_codelists() {
+		AJAX('GET {0}/api/blogs/codelists/'.format(managerurl), function(response) {
+
+			if (isError(arguments))
+				return;
+
+			SET('blogs.categories', response.categories);
+			SET('blogs.tags', response.tags);
+		});
+	}
+
+	// Method refreshes grid
+	function blogs_refresh(reset) {
+
+		if (reset)
+			blogs.filter.page = 1;
+
+		AJAX('GET {0}/api/blogs/'.format(managerurl), blogs.filter, function(response) {
+			SET('blogs.grid', response);
+			var id = [];
+
+			response.items.forEach(function(item) {
+				!item.draft && id.push(item.id);
+			});
+
+			id.length && AJAXCACHE('POST {0}/api/blogs/stats/'.format(managerurl), id, function(response) {
+				$('.blogs-stats').each(function() {
+					var el = $(this);
+					var val = response[el.attr('data-id')];
+					val && el.html(Tangular.helpers.format(val));
+				});
+			}, '5 minute');
+		});
+	}
+
+	function blogs_reload() {
+		var hash = location.hash;
+		hash && hash.length > 1 && setTimeout(function() {
+			blogs_edit(hash.substring(1));
+		}, 500);
+	}
+
+	WATCH('blogs.form.tab', function(path, value) {
+		if (value !== 'preview')
+			return;
+		AJAX('POST {0}/api/blogs/preview/'.format(managerurl), { body: blogs.form.body }, function(response) {
+			var el = $('#blogs-preview');
+			el.html(response);
+			marked_video(el.find('.lang-video'));
+			marked_iframe(el.find('.lang-iframe'));
+			el.find('pre code').each(function(i, block) {
+				hljs.highlightBlock(block);
+			});
+		});
+	});
+
+	ON('#blogs-body', function(component) {
+		var editor = component.codemirror();
+		editor.on('drop',function(editor, e) {
+
+			e.preventDefault();
+			e.stopPropagation();
+
+			SETTER('loading', 'show');
+
+			var data = new FormData();
+			var files = e.dataTransfer.files;
+
+			for (var i = 0, length = files.length; i < length; i++)
+				data.append('file' + i, files[i]);
+
+			UPLOAD('{0}/upload/markdown/'.format(managerurl), data, function(data, err) {
+
+				SETTER('loading', 'hide', 100);
+
+				if (err) {
+					if (err.toString().indexOf('413:') !== -1)
+						FIND('message').warning('@(The file is too large. The maximum allowed length of file is 2 MB.)');
+					return;
+				}
+
+				if (!data || data.length === 0)
+					return;
+
+				var push = [];
+
+				for (var i = 0, length = data.length; i < length; i++) {
+					var file = data[i];
+
+					if (file.width > 0 && file.height > 0) {
+						push.push('![' + file.filename + '](' + file.url + ')');
+						continue;
+					}
+
+					push.push('[' + file.filename + ' (' + (file.length / 1024).toFixed(2) + ' kB)](' + file.url + ')');
+				}
+
+				editor.replaceSelection(push.join('\n'));
+			});
+		});
+	});
+
+	function blogs_reload() {
+		blogs_refresh();
+	}
+
+</script>

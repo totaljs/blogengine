@@ -1,0 +1,8 @@
+<div class="caption"><i class="fa fa-bookmark"></i>@(Tags)</div>
+<div class="tags-container">
+@{foreach m in global.blogstags}
+	@{if m.count}
+	<a href="@{sitemap_url('blogs')}?tag=@{m.linker}" class="tag">@{m.name}</a>
+	@{fi}
+@{end}
+</div>

@@ -1,0 +1,5 @@
+@{sitemap('category')}
+@{sitemap_replace('category', repository.category.name, repository.category.linker, true)}
+
+@{view('partial-blogs', model)}
+@{view('partial-pagination', model)}

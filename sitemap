@@ -1,0 +1,6 @@
+// ID : Title ---> URL --> [Parent]
+homepage                 : @(Homepage)               --> /
+contact                  : @(Contact)                --> /contact/                    --> homepage
+blogs                    : @(Blogs)                  --> /blogs/                      --> homepage
+category                 : {0}                       --> /blogs/{0}/                  --> blogs
+detail                   : {0}                       --> /blogs/{0}/{1}/              --> category

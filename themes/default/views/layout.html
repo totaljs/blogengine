@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="robots" content="all,follow" />
+	<link rel="alternate" type="application/rss+xml" title="@{config.description}" href="/rss/" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,700&subset=latin,latin-ext" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/github.min.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
+</head>
+<body>
+
+	<div data-component="cookie" class="hidden">@(This site uses cookies for visitor statistics. By continuing to browse the site you are agreeing to our use of cookies.) <a href="/privacy/">@(Privacy Policy)</a></div>
+	<div data-component="message" data-button="@(Close)"></div>
+
+	@{if url !== '/'}
+	<div id="loading"></div>
+	@{fi}
+
+	<div class="container">
+		<div class="content">
+			<div class="ui-center">
+				<a href="/" title="Total.js - Web framework for Node.js"><svg width="150px" height="150px" viewBox="-24 0 200 200" version="1.1" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;"><path d="M74.819,0l-74.819,43.266l0,86.532l74.819,43.265l75.181,-43.265l0,-86.532l-75.181,-43.266ZM74.318,54.683l27.682,15.924l0,32.049l-27.682,16.025l-27.818,-16.025l0,-32.049l27.818,-15.924Z" style="fill:#F6BB42;fill-rule:nonzero;"/><path d="M37.049,21.598l-37.049,21.552l0,86.532l37.103,21.578l22.147,-38.642l0,0.046l-29.934,0l14.953,-26.248l-14.953,-26.252l29.934,0l0,0.103l-22.201,-38.669Z" style="fill:#FFCE54;fill-rule:nonzero;"/><path d="M33.633,63.164l12.697,23.005l-12.697,23.495l26.936,0l13.49,-23.453l-13.49,-23.047l-26.936,0Z" style="fill:#FFCE54;fill-rule:nonzero;"/></svg></a>
+			</div>
+			@{view('partial-menu', null, '1 minute')}
+			<div class="breadcrumb">
+				<ul>
+				@{foreach m in sitemap()}
+					<li>@{if !m.first}<span class="fa fa-caret-right"></span>@{fi}<a href="@{m.url}">@{m.name}</a></li>
+				@{end}
+				</ul>
+			</div>
+			<div class="row">
+				<div class="col-md-9 content-border">
+					<div class="padding">
+						@{body}
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="panel">
+						<form action="@{sitemap_url('blogs')}" method="GET">
+							<div class="search">
+								<div class="search-icon"><span class="fa fa-search"></span></div>
+								<div class="search-input"><input type="text" name="search" placeholder="@(Search blogs ...)" autofocus="autofocus" value="@{query.search}" /></div>
+							</div>
+						</form>
+						<hr />
+						@{view('partial-tags', null, '1 minute')}
+						<hr />
+						<div class="social">
+							<a href="https://twitter.com/totalframework" target="_blank"><i class="fa fa-twitter-square"></i></a>
+							<a href="https://www.facebook.com/totaljs.web.framework" target="_blank"><i class="fa fa-facebook-square"></i></a>
+							<a href="https://plus.google.com/b/113175077493180148081/+partialjs" target="_blank"><i class="fa fa-google-plus-square"></i></a>
+							<a href="https://www.linkedin.com/groups/8109884" target="_blank"><i class="fa fa-linkedin-square"></i></a>
+							<a href="/rss/"><i class="fa fa-rss-square"></i></a>
+						</div>
+						<div class="caption"><i class="fa fa-share-alt"></i>@(Follow us)</div>
+						<div class="newsletter-text">@(Join our mailing list. We'll inform you about new products and bug fixes.)</div>
+						<div class="newsletter" data-component="newsletter" data-success="@(Thank you.)">
+							<div class="newsletter-button"><button><span class="fa fa-envelope"></span></button></div>
+							<div class="newsletter-input"><input type="text" placeholder="@(Join to newsletter)" /></div>
+						</div>
+						@{view('partial-latest', null)}
+						@{section('panel')}
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<div>&copy; 2016, All rights reserved.</div>
+			<a href="https://www.totaljs.com">Totaljs.com Ltd</a>
+		</footer>
+	</div>
+
+	<script>
+		Tangular.register('time', function(value) {
+			var diff = Date.now() - value.parseDate().getTime();
+			var minutes = ((diff / 1000) / 60) >> 0;
+
+			if (minutes < 60) {
+				if (minutes < 3)
+					return '@(now)';
+				return @(minutes + ' minutes ago');
+			}
+
+			var hours = (minutes / 60) >> 0;
+			if (hours < 24)
+				return @(hours + ' ' + Tangular.helpers.pluralize(hours, 'hours', 'hour', 'hours', 'hours') + ' ago');
+
+			var days = (hours / 24) >> 0;
+			if (days < 30)
+				return @(days + ' ' + Tangular.helpers.pluralize(days, 'days', 'day', 'days', 'days') + ' ago');
+
+			var months = (days / 29) >> 0;
+			if (months < 12)
+				return @(months + ' ' + Tangular.helpers.pluralize(months, 'months', 'month', 'months', 'months') + ' ago');
+
+			var years = (month / 12) >> 0;
+			return @(years + ' ' + Tangular.helpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago');
+		});
+
+		Tangular.register('month', function(value) {
+			var months = [@('january', 'february', 'march', 'april', 'may', 'juny', 'july', 'august', 'september', 'october', 'november', 'december')];
+			return months[value - 1];
+		});
+	</script>
+
+	@{section('script')}
+
+</body>
+</html>
