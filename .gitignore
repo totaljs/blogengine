@@ -1,2 +1,4 @@
 themes/default/.DS_Store
 sftp-config.json
+logs/*
+tmp/*
