@@ -171,12 +171,9 @@ function refresh() {
 
 		if (doc.draft)
 			return;
-
-		latest.length > 5 && latest.shift();
-		latest.push({ name: doc.name, linker: doc.linker, category: doc.category, category_linker: doc.category_linker, picture: doc.picture, datecreated: doc.datecreated, countcomments: doc.countcomments });
 	};
 
-	NOSQL('blogs').find().prepare(prepare).callback(function() {
+	NOSQL('blogs').find('listing').prepare(prepare).callback(function() {
 		var output = [];
 		Object.keys(categories).forEach(key => output.push({ name: key, linker: key.slug(), count: categories[key] }));
 		F.global.blogs = output;
@@ -187,12 +184,15 @@ function refresh() {
 
 		F.global.blogstags = output;
 
-		latest.quicksort('datecreated', true);
-		F.global.blogslatest = latest;
-
 		// Refreshes cache
 		F.cache.removeAll('partial-menu');
 		F.cache.removeAll('partial-tags');
+	});
+
+	NOSQL('blogs').find('listing').make(function(builder) {
+		builder.limit(5);
+		builder.sort('datecreated', true);
+		builder.callback((err, response) => F.global.blogslatest = response);
 	});
 }
 
