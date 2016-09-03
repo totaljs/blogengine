@@ -16,7 +16,7 @@
 		<tr>
 			<td style="width:300px" class="active">{{ name }}</td>
 			<td class="fs11 silver">{{ if approved }}<span class="badge badge-green b mr5">@(APPROVED)</span>{{ fi }}{{ body }}</td>
-			<td style="width:150px"><i class="fa fa-male mr5"></i>{{ user }}</td>
+			<td style="width:150px"{{ if admin }} class="red"{{ fi }}><i class="fa fa-male mr5"></i>{{ user }}</td>
 			<td style="width:100px" class="silver ui-center hidden-xs">{{ datecreated | format('@(yyyy-MM-dd)') }}</td>
 			<td style="width:80px" class="ui-right">
 				<button name="edit" title="@(Edit)"><span class="fa fa-pencil"></span></button>
@@ -47,6 +47,7 @@
 			</div>
 		</div>
 		<div class="b red" data-component="checkbox" data-component-path="comments.form.approved">@(This comment is approved)</div>
+		<div data-component="checkbox" data-component-path="comments.form.admin">@(Mark the comment as admin comment)</div>
 	</div>
 	<hr style="margin:0 0 8px" />
 	<div class="padding">

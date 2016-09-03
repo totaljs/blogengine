@@ -44,10 +44,11 @@
 				</div>
 				<div class="col-md-3">
 					<div class="panel">
+						<hr class="visible-xs visible-sm" />
 						<form action="@{sitemap_url('blogs')}" method="GET">
 							<div class="search">
 								<div class="search-icon"><span class="fa fa-search"></span></div>
-								<div class="search-input"><input type="text" name="search" placeholder="@(Search blogs ...)" autofocus="autofocus" value="@{query.search}" /></div>
+								<div class="search-input"><input type="text" name="search" placeholder="@(Search blogs ...)" value="@{query.search}" /></div>
 							</div>
 						</form>
 						<hr />

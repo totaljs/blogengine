@@ -1,7 +1,7 @@
 @{meta(model.name, model.perex, model.tags.join(', '))}
 @{sitemap('detail')}
 @{sitemap_replace('category', model.category, model.category_linker, true)}
-@{sitemap_replace('detail', model.name, model.linker, true)}
+@{sitemap_replace('detail', model.name, n => n.format(model.category_linker, model.linker))}
 @{author(model.author)}
 
 <input type="hidden" id="idblock" value="@{model.id}" />

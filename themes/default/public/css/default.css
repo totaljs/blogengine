@@ -105,15 +105,6 @@ p { margin: 0; }
 .fs11 { font-size: 11px; line-height: 14px; }
 .table-repsonsive-label { float: left; display: none; }
 
-@media(max-width: 767px) {
-	.panel { padding-left: 25px; }
-	.links > div { border-bottom: 0; }
-	h1, h2 { font-size: 25px; }
-	td.hidden-xs { display: none !important; }
-	.header-menu-button { display: block; }
-	.menu a { display: block; text-align: left; margin: 0; padding: 5px 20px; border-bottom: 1px solid #E0E0E0; }
-}
-
 .smiles { background-image: url(../img/smilefy.png); width: 18px; height: 18px; position: relative; display: inline-block; vertical-align: middle; margin-top: -1px; }
 .smiles-0 { background-position: 0 0; }
 .smiles-1 { background-position: -18px 0; }
@@ -148,5 +139,15 @@ p { margin: 0; }
 .comment .user { font-weight: bold; color: black; font-size: 14px; line-height: 16px; }
 .comment .date { font-size: 11px; color: #A0A0A0; }
 .comment .body { margin-top: 5px; line-height: 16px; }
-
 .comment .fa-caret-up { position: absolute; top: -22px; color: #D0D0D0; font-size: 30px; }
+.comment-admin { border-color: #ED5565; }
+.comment-admin .fa-caret-up { color: #ED5565; }
+
+@media(max-width: 767px) {
+	.panel { padding-left: 25px; }
+	.links > div { border-bottom: 0; }
+	h1, h2 { font-size: 25px; }
+	td.hidden-xs { display: none !important; }
+	.header-menu-button { display: block; }
+	.menu a { display: block; text-align: left; margin: 0; padding: 5px 20px; border-bottom: 1px solid #E0E0E0; }
+}

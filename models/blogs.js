@@ -188,6 +188,7 @@ function refresh() {
 
 	NOSQL('blogs').find('listing').make(function(builder) {
 		builder.limit(5);
+		builder.where('draft', false);
 		builder.sort('datecreated', true);
 		builder.callback((err, response) => F.global.blogslatest = response);
 	});
