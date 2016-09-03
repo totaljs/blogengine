@@ -246,6 +246,7 @@ label span { vertical-align: middle; }
 .markdown table { width: auto; }
 .markdown ul { margin: 0 0 20px 0; padding: 0 0 0 2em; }
 .markdown th { background-color: #F8F8F8; }
+.markdown hr { border-color: #E0E0E0; border-width: 2px; }
 .markdown blockquote { padding: 0 15px; color: #777; border-left: 4px solid #DDD; margin: 10px 0; }
 
 .video { position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0; margin-bottom: 15px; }
