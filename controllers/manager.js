@@ -15,7 +15,7 @@ exports.install = function() {
 
 	// BLOGS
 	F.route(CONFIG('manager-url') + '/api/blogs/',               json_query,  ['*Blog']);
-	F.route(CONFIG('manager-url') + '/api/blogs/',               json_save,   ['post', '*Blog']);
+	F.route(CONFIG('manager-url') + '/api/blogs/',               json_save,   ['post', '*Blog'], 500);
 	F.route(CONFIG('manager-url') + '/api/blogs/{id}/',          json_read,   ['*Blog']);
 	F.route(CONFIG('manager-url') + '/api/blogs/',               json_remove, ['delete', '*Blog']);
 	F.route(CONFIG('manager-url') + '/api/blogs/clear/',         json_blogs_clear, ['*Blog']);
