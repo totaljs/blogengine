@@ -168,9 +168,6 @@ function refresh() {
 			else
 				tags[name] += 1;
 		});
-
-		if (doc.draft)
-			return;
 	};
 
 	NOSQL('blogs').find('listing').prepare(prepare).callback(function() {
