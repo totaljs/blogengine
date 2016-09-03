@@ -14,7 +14,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 	schema.define('datecreated', Date);
 
 	NOSQL('blogs').view('listing').make(function(filter) {
-		filter.fields('id', 'category', 'name', 'datecreated', 'linker', 'category_linker', 'picture', 'perex', 'tags', 'countcomments', 'countviews', 'draft');
+		filter.fields('id', 'category', 'name', 'datecreated', 'linker', 'category_linker', 'picture', 'perex', 'tags', 'countcomments', 'countviews', 'draft', 'search');
 		filter.sort('datecreated', true);
 	});
 
