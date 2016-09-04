@@ -1,5 +1,8 @@
 <div class="filter">
 	<div class="container">
+		<nav class="buttons">
+			<a href="javascript:void(0)" data-component="click" data-component-path="newsletter_clear"><i class="fa fa-trash"></i><span>@(Clear)</span></a>
+		</nav>
 		<div class="caption" style="margin-bottom:10px"><span class="fa fa-envelope mr5"></span> @(Registered email addresses)</div>
 	</div>
 </div>
@@ -38,12 +41,22 @@
 
 			for (var i = 0, length = csv.length; i < length; i++) {
 				var line = csv[i].split(';');
-				if (!line[1])
-					continue;
-				arr.push({ email: line[0], ip: line[1], datecreated: line[3] });
+				line[1] && arr.push({ email: line[0], ip: line[1], datecreated: line[3] });
 			}
 
 			SET('newsletter.grid', { items: arr, page: 1, pages: 1, count: arr.length, limit: 10000 });
+		});
+	}
+
+	function newsletter_clear() {
+		FIND('confirm').confirm('@(Are you sure you want to clear newsletter list?)', ['@(Yes)', '@(Cancel)'], function(index) {
+			if (index)
+				return;
+			SETTER('loading', 'show');
+			AJAX('GET {0}/api/newsletter/clear/'.format(managerurl), function(response) {
+				SETTER('loading', 'hide', 1000);
+				newsletter_refresh();
+			});
 		});
 	}
 

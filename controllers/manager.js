@@ -4,7 +4,6 @@ exports.install = function() {
 
 	// COMMON
 	F.route(CONFIG('manager-url') + '/*', '~manager');
-	F.route(CONFIG('manager-url') + '/upload/',                  upload, ['post', 'upload', 10000], 3084); // 3 MB
 	F.route(CONFIG('manager-url') + '/upload/picture/',          upload_picture, ['post', 'upload', 10000], 3084); // 3 MB
 	F.route(CONFIG('manager-url') + '/upload/markdown/',         upload_markdown, ['post', 'upload', 10000], 3084); // 3 MB
 	F.route(CONFIG('manager-url') + '/logoff/',                  redirect_logoff);
@@ -18,7 +17,6 @@ exports.install = function() {
 	F.route(CONFIG('manager-url') + '/api/blogs/',               json_save,   ['post', '*Blog'], 500);
 	F.route(CONFIG('manager-url') + '/api/blogs/{id}/',          json_read,   ['*Blog']);
 	F.route(CONFIG('manager-url') + '/api/blogs/',               json_remove, ['delete', '*Blog']);
-	F.route(CONFIG('manager-url') + '/api/blogs/clear/',         json_blogs_clear, ['*Blog']);
 	F.route(CONFIG('manager-url') + '/api/blogs/codelists/',     json_blogs_codelists);
 	F.route(CONFIG('manager-url') + '/api/blogs/preview/',       json_blogs_preview, ['post']);
 	F.route(CONFIG('manager-url') + '/api/blogs/stats/',         json_blogs_stats, ['post']);
@@ -32,6 +30,7 @@ exports.install = function() {
 	// NEWSLETTER
 	F.route(CONFIG('manager-url') + '/api/newsletter/',          json_newsletter, ['*Newsletter']);
 	F.route(CONFIG('manager-url') + '/api/newsletter/csv/',      file_newsletter, ['*Newsletter']);
+	F.route(CONFIG('manager-url') + '/api/newsletter/clear/',    json_newsletter_clear, ['*Newsletter']);
 
 	// SETTINGS
 	F.route(CONFIG('manager-url') + '/api/settings/',            json_settings, ['*Settings']);
@@ -41,29 +40,6 @@ exports.install = function() {
 // ==========================================================================
 // COMMON
 // ==========================================================================
-
-// Upload (multiple) pictures
-function upload() {
-
-	var self = this;
-	var id = [];
-
-	self.files.wait(function(file, next) {
-		file.read(function(err, data) {
-
-			// Store current file into the HDD
-			file.extension = U.getExtension(file.filename);
-			id.push(DB('files').binary.insert(file.filename, data) + '.' + file.extension);
-
-			// Next file
-			setTimeout(next, 100);
-		});
-
-	}, function() {
-		// Returns response
-		self.json(id);
-	});
-}
 
 // Upload (multiple) pictures
 function upload_markdown() {
@@ -102,12 +78,9 @@ function upload_picture() {
 		builder.resizeAlign(U.parseInt(self.body.width), U.parseInt(self.body.height), 'top');
 		builder.quality(90);
 		builder.minify();
-		builder.save(file.path, function() {
-			self.json(DB('files').binary.insert(file.path) + '.jpg');
-		});
+		builder.save(file.path, () => self.json(DB('files').binary.insert(file.path) + '.jpg'));
 	});
 }
-
 
 // Upload base64
 function upload_base64() {
@@ -143,6 +116,34 @@ function redirect_logoff() {
 	var self = this;
 	self.res.cookie('__manager', '', '-1 days');
 	self.redirect(CONFIG('manager-url'));
+}
+
+// ==========================================================================
+// CRUD OPERATIONS
+// ==========================================================================
+
+function json_query() {
+	var self = this;
+	self.$query(self, self.callback());
+}
+
+// Saves (update or create) specific post
+function json_save() {
+	var self = this;
+	self.body.$save(self, self.callback());
+}
+
+// Removes specific post
+function json_remove() {
+	var self = this;
+	self.$remove(self.body.id, self.callback());
+}
+
+// Reads a specific post by ID
+function json_read(id) {
+	var self = this;
+	self.id = id;
+	self.$get(self, self.callback());
 }
 
 // ==========================================================================
@@ -212,39 +213,8 @@ function json_dashboard_online() {
 }
 
 // ==========================================================================
-// POSTS
+// BLOGS
 // ==========================================================================
-
-// Gets all posts
-function json_query() {
-	var self = this;
-	self.$query(self, self.callback());
-}
-
-// Saves (update or create) specific post
-function json_save() {
-	var self = this;
-	self.body.$save(self, self.callback());
-}
-
-// Removes specific post
-function json_remove() {
-	var self = this;
-	self.$remove(self.body.id, self.callback());
-}
-
-// Reads a specific post by ID
-function json_read(id) {
-	var self = this;
-	self.id = id;
-	self.$get(self, self.callback());
-}
-
-// Clears all blogs
-function json_blogs_clear() {
-	var self = this;
-	self.$workflow('clear', self.callback());
-}
 
 // Reads all post categories and manufacturers
 function json_blogs_codelists() {
@@ -286,6 +256,12 @@ function json_settings_save() {
 function json_newsletter() {
 	var self = this;
 	self.$query(self.callback());
+}
+
+// Clears newsletter
+function json_newsletter_clear() {
+	var self = this;
+	self.$workflow('clear', self.callback());
 }
 
 // Downloads all email address as CSV
