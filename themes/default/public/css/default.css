@@ -129,7 +129,7 @@ p { margin: 0; }
 .listing .title { font-family: $font; font-size: 18px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
 .listing .title:hover { text-decoration: none; color: #3F97E1; }
 .listing p { font-size: 12px; margin: 10px 0 15px 0; color: #A0A0A0; height: 32px; overflow: hidden; }
-.listing .date { font-size: 11px; color: #A0A0A0; }
+.listing .date { font-size: 11px; color: #A0A0A0; height: 15px; }
 .listing .date b { margin-left: 10px; }
 .listing .date .fa { margin-right: 5px; }
 .listing .category { font-size: 12px; color: gray; margin-top: 3px; display: block; }
@@ -143,11 +143,14 @@ p { margin: 0; }
 .comment-admin { border-color: #ED5565; }
 .comment-admin .fa-caret-up { color: #ED5565; }
 
+@media(max-width: 992px) {
+	.content-border { border-right: 0; border-bottom: 5px solid #E0E0E0; margin: 30px 0; }
+}
+
 @media(max-width: 767px) {
 	.panel { padding-left: 25px; }
 	.links > div { border-bottom: 0; }
 	h1, h2 { font-size: 25px; }
 	td.hidden-xs { display: none !important; }
-	.header-menu-button { display: block; }
 	.menu a { display: block; text-align: left; margin: 0; padding: 5px 20px; border-bottom: 1px solid #E0E0E0; }
 }
