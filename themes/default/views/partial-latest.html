@@ -18,7 +18,7 @@
 	<div class="latest">
 	@{foreach m in global.commentslatest}
 		<div>
-			<a href="@{sitemap_url('detail', m.category_linker, m.linker)}">@{m.body}</a>
+			<a href="@{sitemap_url('detail', m.category_linker, m.linker)}#comments">@{m.body}</a>
 			<div class="user">@{m.user}</div>
 			<div class="date"><i class="fa fa-clock-o"></i><span class="time">@{m.datecreated}</span></div>
 		</div>
