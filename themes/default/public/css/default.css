@@ -137,7 +137,7 @@ p { margin: 0; }
 .comments { padding: 25px 15px 5px; background-color: #F8F8F8; border-radius: 4px; }
 .comment { background-color: white; border: 2px solid #D0D0D0; padding: 15px; font-size: 12px; border-radius: 4px; position: relative; display: inline-block; }
 .comment .user { font-weight: bold; color: black; font-size: 14px; line-height: 16px; }
-.comment .date { font-size: 11px; color: #A0A0A0; }
+.comment .date { font-size: 11px; color: #A0A0A0; height: 15px; }
 .comment .body { margin-top: 5px; line-height: 16px; }
 .comment .fa-caret-up { position: absolute; top: -22px; color: #D0D0D0; font-size: 30px; }
 .comment-admin { border-color: #ED5565; }
