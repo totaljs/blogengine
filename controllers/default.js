@@ -14,7 +14,7 @@ exports.install = function() {
 // Homepage
 function view_homepage() {
 	var self = this;
-	self.memory('homepage', '1 minute', DEBUG, function() {
+	self.memorize('homepage', '1 minute', DEBUG, function() {
 		self.query.max = 10;
 		self.query.draft = false;
 		self.$query(self, self.callback('index'));
