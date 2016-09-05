@@ -149,10 +149,14 @@ function refresh() {
 	options.max = 5;
 	options.approved = true;
 	GETSCHEMA('Comment').query({ query: options }, function(err, response) {
+
 		F.global.commentslatest = response.items.map(function(item) {
 			item.body = item.body.max(100);
 			return item;
 		});
+
+		F.cache.remove('homepage');
+		F.cache.remove('partial-latest');
 	});
 }
 

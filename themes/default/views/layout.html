@@ -28,7 +28,7 @@
 			<div class="ui-center">
 				<a href="/" title="Total.js - Web framework for Node.js"><svg width="150px" height="150px" viewBox="-24 0 200 200" version="1.1" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;"><path d="M74.819,0l-74.819,43.266l0,86.532l74.819,43.265l75.181,-43.265l0,-86.532l-75.181,-43.266ZM74.318,54.683l27.682,15.924l0,32.049l-27.682,16.025l-27.818,-16.025l0,-32.049l27.818,-15.924Z" style="fill:#F6BB42;fill-rule:nonzero;"/><path d="M37.049,21.598l-37.049,21.552l0,86.532l37.103,21.578l22.147,-38.642l0,0.046l-29.934,0l14.953,-26.248l-14.953,-26.252l29.934,0l0,0.103l-22.201,-38.669Z" style="fill:#FFCE54;fill-rule:nonzero;"/><path d="M33.633,63.164l12.697,23.005l-12.697,23.495l26.936,0l13.49,-23.453l-13.49,-23.047l-26.936,0Z" style="fill:#FFCE54;fill-rule:nonzero;"/></svg></a>
 			</div>
-			@{view('partial-menu', null, '1 minute')}
+			@{view('partial-menu', null, '1 minute', 'partial-menu')}
 			<div class="breadcrumb hidden-xs hidden-sm">
 				<ul>
 				@{foreach m in sitemap()}
@@ -51,7 +51,7 @@
 							</div>
 						</form>
 						<hr />
-						@{view('partial-tags', null, '1 minute')}
+						@{view('partial-tags', null, '1 minute', 'partial-tags')}
 						<hr />
 						<div class="social">
 							<a href="https://twitter.com/totalframework" target="_blank"><i class="fa fa-twitter-square"></i></a>
@@ -66,7 +66,7 @@
 							<div class="newsletter-button"><button><span class="fa fa-envelope"></span></button></div>
 							<div class="newsletter-input"><input type="text" placeholder="@(Join to newsletter)" /></div>
 						</div>
-						@{view('partial-latest', null)}
+						@{view('partial-latest', null, '1 minute', 'partial-latest')}
 						@{section('panel')}
 					</div>
 				</div>

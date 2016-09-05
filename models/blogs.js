@@ -182,8 +182,10 @@ function refresh() {
 		F.global.blogstags = output;
 
 		// Refreshes cache
-		F.cache.removeAll('partial-menu');
-		F.cache.removeAll('partial-tags');
+		F.cache.remove('partial-menu');
+		F.cache.remove('partial-tags');
+		F.cache.remove('partial-latest');
+		F.cache.remove('homepage');
 	});
 
 	NOSQL('blogs').find('listing').make(function(builder) {
