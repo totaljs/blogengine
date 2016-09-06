@@ -25,7 +25,7 @@
 <div class="hidden" data-component="visible" data-component-path="user" data-if="su.sa === true">
 	<hr class="nmt" />
 	<div class="container">
-		<h2>@(Developer's CMS settings)</h2>
+		<h2>@(Main settings)</h2>
 		<br />
 		<div class="row">
 			<div class="col-md-6 m">
@@ -120,9 +120,6 @@ function settings_refresh() {
 			response.users = settings_users_default();
 
 		SET('settings.form', response);
-
-		// If the user changes a currency then we must reload the website.
-		settings.cache.currency = response.currency;
 	});
 }
 
@@ -140,12 +137,7 @@ function settings_save() {
 
 		success(true);
 		RESET('settings.form.*');
-
-		if (window.pages_refresh_dependencies)
-			window.pages_refresh_dependencies();
-
-		if (window.posts_refresh_codelists)
-			window.posts_refresh_codelists();
+		EXEC('blogs_refresh_codelists');
 
 		// Restore users list
 		settings.form.users = tmp;
@@ -206,14 +198,14 @@ ON('#settings.formuser', function(component) {
 		var is = false;
 
 		if (settings.formuser.$index !== undefined) {
+			users[settings.formuser.$index].name = settings.formuser.name.trim();
 			users[settings.formuser.$index].login = settings.formuser.login.trim();
 			users[settings.formuser.$index].password = settings.formuser.password.trim();
 			users[settings.formuser.$index].roles = settings.formuser.roles;
 		} else
-			users.push({ login: settings.formuser.login.trim(), password: settings.formuser.password.trim(), roles: settings.formuser.roles });
+			users.push({ name: settings.formuser.name.trim(), login: settings.formuser.login.trim(), password: settings.formuser.password.trim(), roles: settings.formuser.roles });
 
 		settings.form.users.count = users.length;
-
 		UPDATE('settings.form.users');
 		CHANGE('settings.form.*', true);
 		hide();
@@ -223,21 +215,6 @@ ON('#settings.formuser', function(component) {
 function settings_users_default() {
 	return { items: [], page: 1, pages: 1, count: 0, limit: 100 };
 }
-
-COMPONENT('oauth2callback', function() {
-	var self = this;
-	var name;
-
-	self.make = function() {
-		name = self.html();
-		self.element.addClass('oauth2callback');
-		self.element.html('<div>@(Authorize Callback URL)</div><input type="text" readonly="readonly" />')
-	};
-
-	self.setter = function(value) {
-		self.find('input').val('{0}/oauth2/{1}/callback/'.format(value, name));
-	};
-});
 
 settings_refresh();
 </script>
