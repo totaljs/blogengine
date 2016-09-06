@@ -22,23 +22,21 @@
 	</div>
 </div>
 <br />
-<div class="hidden" data-component="visible" data-component-path="user" data-if="su.sa === true">
-	<hr class="nmt" />
-	<div class="container">
-		<h2>@(Main settings)</h2>
-		<br />
-		<div class="row">
-			<div class="col-md-6 m">
-				<div data-component="textboxtags" data-component-path="settings.form.blogs">@(Blogs categories)</div>
-				<div class="help">@(Posts must be rendered manually in the layout or view. Categories: <code>F.global.posts</code>)</div>
-			</div>
-			<div class="col-md-6 m">
-				<div data-component="textboxtags" data-component-path="settings.form.languages">@(Supported languages)</div>
-				<div class="help">@(E.g. <code>en</code> <code>sk</code> <code>ru</code>)</div>
-			</div>
+<hr class="nmt" />
+<div class="container">
+	<h2>@(Main settings)</h2>
+	<br />
+	<div class="row">
+		<div class="col-md-6 m">
+			<div data-component="textboxtags" data-component-path="settings.form.blogs">@(Blogs categories)</div>
+			<div class="help">@(E.g. <code>Tutorials</code> <code>Design</code>)</div>
 		</div>
-		<br />
+		<div class="col-md-6 m">
+			<div data-component="textboxtags" data-component-path="settings.form.languages">@(Supported languages)</div>
+			<div class="help">@(E.g. <code>en</code> <code>sk</code> <code>ru</code>)</div>
+		</div>
 	</div>
+	<br />
 </div>
 <hr />
 <br />
