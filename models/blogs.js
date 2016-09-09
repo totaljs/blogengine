@@ -5,6 +5,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 	schema.define('language', 'Lower(2)');
 	schema.define('name', 'String(80)', true);
 	schema.define('perex', 'String(200)', true);
+	schema.define('linker', 'String(100)');
 	schema.define('picture', 'String');
 	schema.define('tags', '[Lower]');
 	schema.define('comments', Boolean);
