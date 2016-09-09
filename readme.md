@@ -6,9 +6,9 @@
 
 __License__: [MIT](license.txt). 
 
-- install latest Total.js `npm install total.js` (minimal version: __+v2.0.2__)
-- install marked `npm install marked`
-- download source-code
+- install [Node.js platfrom](https://nodejs.org/) v4+
+- install [GraphicsMagick](http://www.graphicsmagick.org/) due to pictures
+- `$ cd blogengine` and `$ npm install`
 - run `node debug.js`
 
 ---
