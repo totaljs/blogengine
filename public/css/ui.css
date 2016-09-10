@@ -244,7 +244,7 @@ label span { vertical-align: middle; }
 .markdown pre { padding: 0; border-radius: 4px; margin: 20px 0; width: 100%; }
 .markdown pre code { padding: 15px; font-size: 14px; line-height: 18px; }
 .markdown table { width: auto; }
-.markdown ul { margin: 0 0 20px 0; padding: 0 0 0 2em; }
+.markdown ul, .markdown ol { margin: 0 0 20px 0; padding: 0 0 0 2em; }
 .markdown th { background-color: #F8F8F8; }
 .markdown hr { border-color: #E0E0E0; border-width: 2px; }
 .markdown blockquote { padding: 0 15px; color: #777; border-left: 4px solid #DDD; margin: 10px 0; }
