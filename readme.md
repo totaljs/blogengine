@@ -16,6 +16,9 @@ __License__: [MIT](license.txt).
 - administration area `http://127.0.0.1:8000/$manager/`
 - login __user:__ `admin`, __password:__ `admin` (credentials are stored in `config`)
 
+## Markdown
+
+Read more about supported [Markdown syntax](https://github.com/totaljs/blogengine/blob/master/markdown.txt).
 
 ## Contributors
 
