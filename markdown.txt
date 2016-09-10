@@ -1,0 +1,81 @@
+================ HEADERS
+
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+
+================ EMPHASIS
+
+*This text will be italic*
+_This will also be italic_
+
+**This text will be bold**
+__This will also be bold__
+
+_You **can** combine them_
+
+================ LISTS
+
+* Item 1
+* Item 2
+  * Item 2a
+  * Item 2b
+
+1. Item 1
+2. Item 2
+3. Item 3
+   * Item 3a
+   * Item 3b
+
+- Dashes work just as well
+- And if you have sub points, put two spaces before the dash or star:
+  - Like this
+  - And this
+
+================ Blockquotes
+
+As Kanye West said:
+
+> We're living the future so the present is our past.
+
+================ IMAGES
+
+![Logo](https://www.totaljs.com/img/logo.png)
+
+================ LINKS
+
+[www.totaljs.com/blogengine](https://www.totaljs.com/blogengine/)
+
+================ INLINE CODE
+
+I think you should use an `<addr>` element here instead.
+
+================ TABLES
+
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
+Content in the first column | Content in the second column
+
+First Header | Second Header
+:----------: | ------------:
+Center       | Right
+
+================ SYNTAX HIGHLIGHTING
+
+```javascript
+function getName() {
+	return 'BlogEngine';
+}
+```
+
+================ VIDEOS (YOUTUBE/VIMEO)
+
+```video
+https://www.youtube.com/watch?v=TcZbr9tKB_c
+```
+
+```video
+https://vimeo.com/134131056
+```
