@@ -10,7 +10,8 @@ $(document).ready(function() {
 	jR.clientside('.jrouting');
 
 	$('.jrouting').each(function(index) {
-		$(this).toggleClass('hidden', su.roles.length && su.roles.indexOf(el.attr('data-role')) === -1);
+		var el = $(this);
+		el.toggleClass('hidden', su.roles.length && su.roles.indexOf(el.attr('data-role')) === -1);
 	});
 
 	FIND('loading', FN('() => this.hide(500)'));
