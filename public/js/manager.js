@@ -59,12 +59,6 @@ if (window.su) {
 			SET('common.page', 'settings');
 		});
 	}
-
-	if (can('system')) {
-		jRouting.route(managerurl + '/system/', function() {
-			SET('common.page', 'system');
-		});
-	}
 }
 
 jRouting.on('location', function(url) {
