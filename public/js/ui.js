@@ -1314,7 +1314,6 @@ COMPONENT('codemirror', function() {
 	var skipA = false;
 	var skipB = false;
 	var editor;
-	var timeout;
 
 	self.validate = function(value) {
 		return required ? value && value.length > 0 : true;
@@ -1326,14 +1325,13 @@ COMPONENT('codemirror', function() {
 
 	self.make = function() {
 
-		var height = self.element.attr('data-height');
-		var icon = self.element.attr('data-icon');
-		var content = self.element.html();
+		var height = self.attr('data-height');
+		var icon = self.attr('data-icon');
+		var content = self.html();
 
-		self.element.empty();
-		self.element.append('<div class="ui-codemirror-label' + (required ? ' ui-codemirror-label-required' : '') + '">' + (icon ? '<span class="fa ' + icon + '"></span> ' : '') + content + ':</div><div class="ui-codemirror"></div>');
-		var container = self.element.find('.ui-codemirror');
+		self.html('<div class="ui-codemirror-label' + (required ? ' ui-codemirror-label-required' : '') + '">' + (icon ? '<span class="fa ' + icon + '"></span> ' : '') + content + ':</div><div class="ui-codemirror"></div>');
 
+		var container = self.find('.ui-codemirror');
 		var options = {};
 
 		options.lineNumbers = self.attr('data-linenumbers') === 'true';
@@ -1348,9 +1346,7 @@ COMPONENT('codemirror', function() {
 		}
 
 		editor = CodeMirror(container.get(0), options);
-
-		if (height !== 'auto')
-			editor.setSize('100%', height || '200px');
+		height !== 'auto' && editor.setSize('100%', height || '200px');
 
 		editor.on('change', function(a, b) {
 
@@ -1359,8 +1355,7 @@ COMPONENT('codemirror', function() {
 				return;
 			}
 
-			clearTimeout(timeout);
-			timeout = setTimeout(function() {
+			setTimeout2(self.id, function() {
 				skipA = true;
 				self.reset(true);
 				self.dirty(false);
@@ -1401,7 +1396,7 @@ COMPONENT('codemirror', function() {
 	};
 
 	self.state = function(type) {
-		self.element.find('.ui-codemirror').toggleClass('ui-codemirror-invalid', self.isInvalid());
+		self.find('.ui-codemirror').toggleClass('ui-codemirror-invalid', self.isInvalid());
 	};
 });
 
