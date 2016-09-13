@@ -26,42 +26,31 @@ function isError(arguments) {
 // Because of login form
 if (window.su) {
 
-	jRouting.route(managerurl + '/', function() {
-
-		if (can('dashboard')) {
+	jR.route(managerurl + '/', function() {
+		if (can('dashboard'))
 			SET('common.page', 'dashboard');
-			return;
-		}
-
-		jRouting.redirect(managerurl + '/' + su.roles[0] + '/');
+		else
+			jR.redirect(managerurl + '/' + su.roles[0] + '/');
 	});
 
-	if (can('blogs')) {
-		jRouting.route(managerurl + '/blogs/', function() {
-			SET('common.page', 'blogs');
-		});
-	}
+	can('blogs') && jR.route(managerurl + '/blogs/', function() {
+		SET('common.page', 'blogs');
+	});
 
-	if (can('comments')) {
-		jRouting.route(managerurl + '/comments/', function() {
-			SET('common.page', 'comments');
-		});
-	}
+	can('comments') && jR.route(managerurl + '/comments/', function() {
+		SET('common.page', 'comments');
+	});
 
-	if (can('newsletter')) {
-		jRouting.route(managerurl + '/newsletter/', function() {
-			SET('common.page', 'newsletter');
-		});
-	}
+	can('newsletter') && jR.route(managerurl + '/newsletter/', function() {
+		SET('common.page', 'newsletter');
+	});
 
-	if (can('settings')) {
-		jRouting.route(managerurl + '/settings/', function() {
-			SET('common.page', 'settings');
-		});
-	}
+	can('settings') && jR.route(managerurl + '/settings/', function() {
+		SET('common.page', 'settings');
+	});
 }
 
-jRouting.on('location', function(url) {
+jR.on('location', function(url) {
 	url = url.split('/');
 	var nav = $('header nav');
 	nav.find('.selected').removeClass('selected');
@@ -81,37 +70,31 @@ function success() {
 	var el = $('#success');
 	el.show();
 	el.addClass('success-animation');
-	setTimeout(function() {
+	setTimeout2('success', function() {
 		el.removeClass('success-animation');
 		setTimeout(function() {
 			el.hide();
 		}, 1000);
 	}, 1500);
-	FIND('loading').hide(500);
+	SETTER('loading', 'hide', 500);
 }
 
 function can(name) {
-	if (!su.roles.length)
-		return true;
-	return su.roles.indexOf(name) !== -1;
+	return su.roles.length ? su.roles.indexOf(name) !== -1 : true;
 }
 
 Tangular.register('join', function(value) {
-	if (value instanceof Array)
-		return value.join(', ');
-	return '';
+	return value instanceof Array ? value.join(', ') : '';
 });
 
 Tangular.register('default', function(value, def) {
-	if (value == null || value === '')
-		return def;
-	return value;
+	return value == null || value === '' ? def : value;
 });
 
 function mainmenu() {
 	$('header nav').toggleClass('mainmenu-visible');
 }
 
-jRouting.on('location', function() {
+jR.on('location', function() {
 	$('header nav').removeClass('mainmenu-visible');
 });
