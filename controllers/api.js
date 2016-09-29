@@ -8,6 +8,9 @@ exports.install = function() {
 	F.route('/api/comments/{id}/',     json_comments_query, ['*Comment']);
 	F.route('/api/comments/',          json_comments_save, ['post', '*CommentForm']);
 
+	// BLOGS
+	F.route('/api/blogs/',             json_blogs_query, ['*Blog']);
+
 	// NEWSLETTER
 	F.route('/api/newsletter/',        json_save, ['post', '*Newsletter']);
 
