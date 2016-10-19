@@ -37,15 +37,10 @@ NEWSCHEMA('Comment').make(function(schema) {
 		filter.callback(function(err, docs, count) {
 
 			var data = {};
-
 			data.count = count;
 			data.items = docs;
 			data.limit = options.max;
-			data.pages = Math.ceil(data.count / options.max);
-
-			if (data.pages === 0)
-				data.pages = 1;
-
+			data.pages = Math.ceil(data.count / options.max) || 1;
 			data.page = options.page + 1;
 
 			if (options.idblog || !data.count)
@@ -93,10 +88,9 @@ NEWSCHEMA('Comment').make(function(schema) {
 		var plain = model.$plain();
 
 		model.search = (model.body || '').keywords(true, true).join(' ').max(1000);
-
-		delete plain.approved_old;
-		delete plain.id;
-		delete plain.datecreated;
+		plain.approved_old = undefined;
+		plain.id = undefined;
+		plain.datecreated = undefined;
 
 		NOSQL('comments').modify(plain).where('id', model.id).callback(function(err, count) {
 
@@ -109,7 +103,7 @@ NEWSCHEMA('Comment').make(function(schema) {
 			F.emit('comments.save', model);
 
 			// Creates backup
-			model.datebackuped = new Date();
+			model.datebackup = F.datetime;
 			NOSQL('comments_backup').insert(model);
 
 			// Recounts comments
@@ -170,10 +164,8 @@ NEWSCHEMA('CommentForm').make(function(schema) {
 
 	schema.setSave(function(error, model, controller, callback) {
 
-		var newbie = false;
-
 		model.id = UID();
-		model.datecreated = new Date();
+		model.datecreated = F.datetime;
 		model.ip = controller.req.ip;
 		model.search = (model.body || '').keywords(true, true).join(' ').max(1000);
 		model.approved = false;

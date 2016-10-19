@@ -51,15 +51,10 @@ NEWSCHEMA('Blog').make(function(schema) {
 		filter.callback(function(err, docs, count) {
 
 			var data = {};
-
 			data.count = count;
 			data.items = docs;
 			data.limit = options.max;
-			data.pages = Math.ceil(data.count / options.max);
-
-			if (data.pages === 0)
-				data.pages = 1;
-
+			data.pages = Math.ceil(data.count / options.max) || 1;
 			data.page = options.page + 1;
 
 			// Returns data
@@ -90,16 +85,15 @@ NEWSCHEMA('Blog').make(function(schema) {
 
 	schema.setSave(function(error, model, controller, callback) {
 
-		var newbie = false;
+		var newbie = model.id ? false : true;
 
-		if (!model.id) {
-			newbie = true;
+		if (newbie) {
 			model.id = UID();
 			model.datecreated = F.datetime;
-			model.author = controller.user.name;
 			model.countcomments = 0;
 			model.datecommented = null;
-		}
+		} else
+			model.dateupdated = F.datetime;
 
 		if (!model.draft && model.draft_old) {
 			model.datecreated = F.datetime;
@@ -127,7 +121,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 			if (newbie)
 				return;
 
-			model.datebackuped = new Date();
+			model.datebackup = new Date();
 			NOSQL('blogs_backup').insert(model);
 		};
 

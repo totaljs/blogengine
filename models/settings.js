@@ -15,7 +15,7 @@ NEWSCHEMA('Settings').make(function(schema) {
 	schema.define('emailreply', 'Email', true);
 	schema.define('emailsender', 'Email', true);
 	schema.define('blogs', '[String]');
-	schema.define('languages', '[String(2)]');
+	schema.define('languages', '[Lower(2)]');
 	schema.define('users', '[SuperUser]');
 
 	// Saves settings into the file
@@ -26,13 +26,12 @@ NEWSCHEMA('Settings').make(function(schema) {
 		if (settings.url.endsWith('/'))
 			settings.url = settings.url.substring(0, settings.url.length - 1);
 
-		settings.datebackuped = new Date();
+		settings.datebackup = F.datetime;
 		DB('settings_backup').insert(JSON.parse(JSON.stringify(settings)));
-		delete settings.datebackuped;
+		delete settings.datebackup;
 
 		// Writes settings into the file
 		Fs.writeFile(filename, JSON.stringify(settings), function() {
-
 			F.emit('settings.save', settings);
 			callback(SUCCESS(true));
 		});
@@ -41,15 +40,10 @@ NEWSCHEMA('Settings').make(function(schema) {
 	// Gets settings
 	schema.setGet(function(error, model, options, callback) {
 		Fs.readFile(filename, function(err, data) {
-			var settings = {};
-
-			if (!err) {
+			if (err)
+				settings= { 'manager-superadmin': 'admin:admin' };
+			else
 				settings = JSON.parse(data.toString('utf8'));
-				callback(settings);
-				return;
-			}
-
-			settings['manager-superadmin'] = 'admin:admin';
 			callback(settings);
 		});
 	});
@@ -73,7 +67,7 @@ NEWSCHEMA('Settings').make(function(schema) {
 
 			// Adds an admin (service) account
 			var sa = CONFIG('manager-superadmin').split(':');
-			F.config.custom.users.push({ login: sa[0], password: sa[1], roles: [], sa: true });
+			F.config.custom.users.push({ name: 'Administrator', login: sa[0], password: sa[1], roles: [], sa: true });
 
 			// Optimized for the performance
 			var users = {};
