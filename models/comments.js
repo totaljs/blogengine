@@ -1,7 +1,7 @@
 // For administration area
 NEWSCHEMA('Comment').make(function(schema) {
 
-	schema.define('id', 'UID');
+	schema.define('id', 'UID', true);
 	schema.define('idblog', 'UID', true);
 	schema.define('name', 'String(40)', true);
 	schema.define('user', 'String(50)', true);
