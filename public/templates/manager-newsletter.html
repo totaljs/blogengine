@@ -1,7 +1,7 @@
 <div class="filter">
 	<div class="container">
 		<nav class="buttons">
-			<a href="javascript:void(0)" data-component="click" data-component-path="newsletter_clear"><i class="fa fa-trash"></i><span>@(Clear)</span></a>
+			<a href="javascript:void(0)" class="exec" data-exec="newsletter_clear"><i class="fa fa-trash"></i><span>@(Clear)</span></a>
 		</nav>
 		<div class="caption" style="margin-bottom:10px"><span class="fa fa-envelope mr5"></span> @(Registered email addresses)</div>
 	</div>
@@ -12,7 +12,7 @@
 		<a href="javascript:void(0)" class="csvexport"><span class="fa fa-download mr5"></span>@(<b>Download CSV</b> with email addresses)</a>
 	</div>
 	<br />
-	<div data-component="grid" data-component-path="newsletter.grid" data-max="10000" data-page="@(Page: #)" data-pages="@(# pages,# page,# pages,# pages)" data-items="@(# items,# item,# items,# items)" data-empty="@(Database does not contain any data.)">
+	<div data-jc="grid" data-jc-path="newsletter.grid" data-max="10000" data-page="@(Page: #)" data-pages="@(# pages,# page,# pages,# pages)" data-items="@(# items,# item,# items,# items)" data-empty="@(Database does not contain any data.)">
 		<script type="text/html">
 		<tr>
 			<td><span class="fa fa-envelope"></span> {{ email }}</td>
@@ -31,19 +31,13 @@
 
 	function newsletter_refresh() {
 		AJAX('GET {0}/api/newsletter/'.format(managerurl), function(response) {
-
-			if (isError(arguments))
-				return;
-
 			var csv = response.split('\n');
 			var arr = [];
 			csv.reverse();
-
 			for (var i = 0, length = csv.length; i < length; i++) {
 				var line = csv[i].split(';');
 				line[1] && arr.push({ email: line[0], ip: line[1], datecreated: line[3] });
 			}
-
 			SET('newsletter.grid', { items: arr, page: 1, pages: 1, count: arr.length, limit: 10000 });
 		});
 	}

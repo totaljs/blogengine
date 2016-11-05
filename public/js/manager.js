@@ -1,3 +1,6 @@
+// Trims empty fields
+languages = languages.trim();
+
 var common = {};
 
 // Current page
