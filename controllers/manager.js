@@ -1,40 +1,43 @@
 exports.install = function() {
+
+	var url = CONFIG('manager-url');
+
 	// Auto-localize static HTML templates
 	F.localize('/templates/*.html', ['compress']);
 
 	// COMMON
-	F.route(CONFIG('manager-url') + '/*', '~manager');
-	F.route(CONFIG('manager-url') + '/upload/picture/',          upload_picture, ['post', 'upload', 10000], 3084); // 3 MB
-	F.route(CONFIG('manager-url') + '/upload/markdown/',         upload_markdown, ['post', 'upload', 10000], 3084); // 3 MB
-	F.route(CONFIG('manager-url') + '/logoff/',                  redirect_logoff);
+	F.route(url + '/*', '~manager');
+	F.route(url + '/upload/picture/',          upload_picture, ['post', 'upload', 10000], 3084); // 3 MB
+	F.route(url + '/upload/markdown/',         upload_markdown, ['post', 'upload', 10000], 3084); // 3 MB
+	F.route(url + '/logoff/',                  redirect_logoff);
 
 	// DASHBOARD
-	F.route(CONFIG('manager-url') + '/api/dashboard/',           json_dashboard);
-	F.route(CONFIG('manager-url') + '/api/dashboard/online/',    json_dashboard_online);
+	F.route(url + '/api/dashboard/',           json_dashboard);
+	F.route(url + '/api/dashboard/online/',    json_dashboard_online);
 
 	// BLOGS
-	F.route(CONFIG('manager-url') + '/api/blogs/',               json_query,  ['*Blog']);
-	F.route(CONFIG('manager-url') + '/api/blogs/',               json_save,   ['post', '*Blog'], 500);
-	F.route(CONFIG('manager-url') + '/api/blogs/{id}/',          json_read,   ['*Blog']);
-	F.route(CONFIG('manager-url') + '/api/blogs/',               json_remove, ['delete', '*Blog']);
-	F.route(CONFIG('manager-url') + '/api/blogs/codelists/',     json_blogs_codelists);
-	F.route(CONFIG('manager-url') + '/api/blogs/preview/',       json_blogs_preview, ['post']);
-	F.route(CONFIG('manager-url') + '/api/blogs/stats/',         json_blogs_stats, ['post']);
+	F.route(url + '/api/blogs/',               json_query,  ['*Blog']);
+	F.route(url + '/api/blogs/',               json_save,   ['post', '*Blog'], 500);
+	F.route(url + '/api/blogs/{id}/',          json_read,   ['*Blog']);
+	F.route(url + '/api/blogs/',               json_remove, ['delete', '*Blog']);
+	F.route(url + '/api/blogs/codelists/',     json_blogs_codelists);
+	F.route(url + '/api/blogs/preview/',       json_blogs_preview, ['post']);
+	F.route(url + '/api/blogs/stats/',         json_blogs_stats, ['post']);
 
 	// COMMENTS
-	F.route(CONFIG('manager-url') + '/api/comments/',            json_query,  ['*Comment']);
-	F.route(CONFIG('manager-url') + '/api/comments/',            json_save,   ['post', '*Comment']);
-	F.route(CONFIG('manager-url') + '/api/comments/{id}/',       json_read,   ['*Comment']);
-	F.route(CONFIG('manager-url') + '/api/comments/',            json_remove, ['delete', '*Comment']);
+	F.route(url + '/api/comments/',            json_query,  ['*Comment']);
+	F.route(url + '/api/comments/',            json_save,   ['post', '*Comment']);
+	F.route(url + '/api/comments/{id}/',       json_read,   ['*Comment']);
+	F.route(url + '/api/comments/',            json_remove, ['delete', '*Comment']);
 
 	// NEWSLETTER
-	F.route(CONFIG('manager-url') + '/api/newsletter/',          json_newsletter, ['*Newsletter']);
-	F.route(CONFIG('manager-url') + '/api/newsletter/csv/',      file_newsletter, ['*Newsletter']);
-	F.route(CONFIG('manager-url') + '/api/newsletter/clear/',    json_newsletter_clear, ['*Newsletter']);
+	F.route(url + '/api/newsletter/',          json_newsletter, ['*Newsletter']);
+	F.route(url + '/api/newsletter/csv/',      file_newsletter, ['*Newsletter']);
+	F.route(url + '/api/newsletter/clear/',    json_newsletter_clear, ['*Newsletter']);
 
 	// SETTINGS
-	F.route(CONFIG('manager-url') + '/api/settings/',            json_settings, ['*Settings']);
-	F.route(CONFIG('manager-url') + '/api/settings/',            json_settings_save, ['put', '*Settings']);
+	F.route(url + '/api/settings/',            json_settings, ['*Settings']);
+	F.route(url + '/api/settings/',            json_settings_save, ['put', '*Settings']);
 };
 
 // ==========================================================================
