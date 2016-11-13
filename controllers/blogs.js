@@ -9,6 +9,10 @@ function view_blogs() {
 	var self = this;
 	self.query.max = 10;
 	self.query.draft = false;
+
+	// Total.js monitoring fulltext stats
+	self.query.search && MODULE('webcounter').inc('fulltext');
+
 	self.$query(self, self.callback('all'));
 }
 
@@ -16,7 +20,6 @@ function view_blogs_category(category) {
 	var self = this;
 
 	self.repository.category = F.global.blogs.findItem('linker', category);
-
 	if (!self.repository.category)
 		return throw404();
 
