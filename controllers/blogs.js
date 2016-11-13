@@ -38,7 +38,7 @@ function view_blogs_detail(category, linker) {
 		self.query.linker = linker;
 		self.query.category = category;
 
-		self.$get(self, function(err, response) {
+		self.$read(self, function(err, response) {
 
 			if (err || !response)
 				return self.throw404(err);
@@ -49,7 +49,17 @@ function view_blogs_detail(category, linker) {
 			}
 
 			response.body = markdown(response.body);
-			self.view('detail', response);
+
+			self.query.skip = response.id;
+			self.query.max = 8;
+			self.query.draft = false;
+			self.query.page = 1;
+
+			self.$query(self, function(err, items) {
+				response.others = items;
+				self.view('detail', response);
+			});
+
 		});
 	});
 }

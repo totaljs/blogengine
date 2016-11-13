@@ -44,6 +44,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 
 		options.draft === false && filter.in('draft', false);
 		options.linker && filter.where('linker', '<>', options.linker);
+		options.skip && filter.where('id', '<>', options.skip);
 
 		filter.take(take);
 		filter.skip(skip);

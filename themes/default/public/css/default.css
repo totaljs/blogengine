@@ -143,6 +143,17 @@ p { margin: 0; }
 .comment-admin { border-color: #ED5565; }
 .comment-admin .fa-caret-up { color: #ED5565; }
 
+.others { padding: 20px; border-radius: 4px; background-color: #F8F8F8; }
+.others div > a { display: block; border-top: 1px solid #E0E0E0; padding: 3px 0; transition: all 0.4s; font-size: 12px; }
+.others div > a:first-child { border-top: 0; }
+.others div > a:hover { text-decoration: none; color: #457AB2; padding-left: 10px; background-color: white; }
+.others div > a .fa { margin-right: 5px; }
+.others div > a span { font-size: 11px; background-color: #E5EDF3; padding: 1px 4px; border-radius: 4px; margin-left: 6px; color: #586D8D; text-decoration: none !important; }
+.others h2 { font-family: $font; font-size: 18px; color: black; margin: 0 0 15px; }
+.others h2 .fa { margin-right: 8px; }
+.others .membership { margin-top: 10px; display: inline-block; position: relative; padding: 5px 20px; border-radius: 3px; background-color: #EDBC5A; text-decoration: none; font-size: 12px; color: white; }
+.others .membership:hover { background-color: #F8CE69; }
+
 @media(max-width: 992px) {
 	.content-border { border-right: 0; border-bottom: 5px solid #E0E0E0; margin: 30px 0; }
 }
