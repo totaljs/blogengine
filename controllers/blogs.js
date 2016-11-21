@@ -13,6 +13,7 @@ function view_blogs() {
 	// Total.js monitoring fulltext stats
 	self.query.search && MODULE('webcounter').inc('fulltext');
 
+	// DB
 	self.$query(self, self.callback('all'));
 }
 
