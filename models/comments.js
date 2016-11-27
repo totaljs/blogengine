@@ -136,6 +136,10 @@ NEWSCHEMA('Comment').make(function(schema) {
 			});
 		});
 	});
+
+	schema.addWorkflow('stats', function(error, model, options, callback) {
+		NOSQL('comments').counter.monthly('all', callback);
+	});
 });
 
 function refresh() {
@@ -171,7 +175,10 @@ NEWSCHEMA('CommentForm').make(function(schema) {
 		model.approved = false;
 
 		F.emit('comments.save', model);
-		NOSQL('comments').insert(model).callback(() => callback(SUCCESS(true)));
+		var db = NOSQL('comments');
+		db.insert(model).callback(() => callback(SUCCESS(true)));
+		db.counter.hit('all');
+		db.counter.hit(model.idblog);
 	});
 
 	schema.addWorkflow('check', function(error, model, idblog, callback) {

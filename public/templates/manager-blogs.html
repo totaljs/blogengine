@@ -64,6 +64,39 @@
 			</div>
 		</div>
 	</div>
+	<div data-jc="visible" data-jc-path="blogs.form.id" data-if="value && value.length">
+		<div class="padding npb">
+			<div class="row">
+				<div class="col-lg-3 m">
+					<div class="keyvalue">
+						<div class="key"><i class="fa fa-calendar"></i>@(Created)</div>
+						<div class="value" data-binder="blogs.form.datecreated" data-binder-html="n => Tangular.helpers.time(n)"></div>
+					</div>
+				</div>
+				<div class="col-lg-3 m">
+					<div class="keyvalue">
+						<div class="key"><i class="fa fa-calendar"></i>@(Updated)</div>
+						<div class="value" data-binder="blogs.form.dateupdated" data-binder-html="n => n ? Tangular.helpers.time(n) : '@(unchanged)'"></div>
+					</div>
+				</div>
+				<div class="col-lg-3 m">
+					<div class="keyvalue">
+						<div class="key"><i class="fa fa-calendar"></i>@(Created by)</div>
+						<div class="value" data-binder="blogs.form.admincreated" data-binder-html="n => n ? n : '@(nobody)'"></div>
+					</div>
+				</div>
+				<div class="col-lg-3 m">
+					<div class="keyvalue">
+						<div class="key"><i class="fa fa-calendar"></i>@(Updated by)</div>
+						<div class="value" data-binder="blogs.form.adminupdated" data-binder-html="n => n ? n : '@(nobody)'"></div>
+					</div>
+				</div>
+			</div>
+			<div data-jc="nosqlcounter" data-jc-path="blogs.form.stats" style="height:52px" data-count="32"></div>
+			<div class="help"><i class="fa fa-bar-chart"></i>@(Stats of all views for last 32 months)</div>
+			<br />
+		</div>
+	</div>
 	<hr style="margin:0 0 8px" />
 	<div class="padding">
 		<ul class="tabmenu" data-jc="tabmenu" data-jc-path="blogs.form.tab">
@@ -133,9 +166,7 @@
 
 	// Watch for changes in blogs filter
 	WATCH('blogs.filter.*', function(path, value) {
-		if (NOTMODIFIED('blogs.filter', blogs.filter))
-			return;
-		blogs_refresh(path !== 'blogs.filter.page');
+		!NOTMODIFIED('blogs.filter', blogs.filter) && blogs_refresh(path !== 'blogs.filter.page');
 	});
 
 	ON('#blogs.form', function(component) {
@@ -172,6 +203,7 @@
 			response.draft_old = response.draft;
 			SET('blogs.form', $.extend({ $index: index, tab: 'edit' }, response), true);
 			SET('blogs.response', null);
+			AJAX('GET {0}/api/blogs/{1}/stats/'.format(managerurl, id), 'blogs.form.stats');
 			SET('common.form', 'blogs');
 		});
 	}

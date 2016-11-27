@@ -7,7 +7,7 @@ exports.install = function() {
 
 	// COMMON
 	F.route(url + '/*', '~manager');
-	F.route(url + '/upload/picture/',          upload_picture, ['post', 'upload', 10000], 3084); // 3 MB
+	F.route(url + '/upload/picture/',          upload_picture,  ['post', 'upload', 10000], 3084); // 3 MB
 	F.route(url + '/upload/markdown/',         upload_markdown, ['post', 'upload', 10000], 3084); // 3 MB
 	F.route(url + '/logoff/',                  redirect_logoff);
 
@@ -17,27 +17,30 @@ exports.install = function() {
 
 	// BLOGS
 	F.route(url + '/api/blogs/',               json_query,  ['*Blog']);
-	F.route(url + '/api/blogs/',               json_save,   ['post', '*Blog'], 500);
+	F.route(url + '/api/blogs/',               json_save,   ['*Blog', 'post'], 500);
 	F.route(url + '/api/blogs/{id}/',          json_read,   ['*Blog']);
-	F.route(url + '/api/blogs/',               json_remove, ['delete', '*Blog']);
+	F.route(url + '/api/blogs/',               json_remove, ['*Blog', 'delete']);
 	F.route(url + '/api/blogs/codelists/',     json_blogs_codelists);
 	F.route(url + '/api/blogs/preview/',       json_blogs_preview, ['post']);
 	F.route(url + '/api/blogs/stats/',         json_blogs_stats, ['post']);
+	F.route(url + '/api/blogs/{id}/stats/',    json_blogs_stats);
 
 	// COMMENTS
 	F.route(url + '/api/comments/',            json_query,  ['*Comment']);
-	F.route(url + '/api/comments/',            json_save,   ['post', '*Comment']);
+	F.route(url + '/api/comments/',            json_save,   ['*Comment', 'post']);
 	F.route(url + '/api/comments/{id}/',       json_read,   ['*Comment']);
-	F.route(url + '/api/comments/',            json_remove, ['delete', '*Comment']);
+	F.route(url + '/api/comments/',            json_remove, ['*Comment', 'delete']);
+	F.route(url + '/api/comments/stats/',      json_stats,  ['*Comment']);
 
 	// NEWSLETTER
-	F.route(url + '/api/newsletter/',          json_newsletter, ['*Newsletter']);
-	F.route(url + '/api/newsletter/csv/',      file_newsletter, ['*Newsletter']);
-	F.route(url + '/api/newsletter/clear/',    json_newsletter_clear, ['*Newsletter']);
+	F.route(url + '/api/newsletter/',          json_query,  ['*Newsletter']);
+	F.route(url + '/api/newsletter/clear/',    json_clear,  ['*Newsletter']);
+	F.route(url + '/api/newsletter/stats/',    json_stats,  ['*Newsletter']);
+	F.route(url + '/newsletter/export/',       file_newsletter, ['*Newsletter']);
 
 	// SETTINGS
 	F.route(url + '/api/settings/',            json_settings, ['*Settings']);
-	F.route(url + '/api/settings/',            json_settings_save, ['put', '*Settings']);
+	F.route(url + '/api/settings/',            json_settings_save, ['*Settings', 'put']);
 };
 
 // ==========================================================================
@@ -149,6 +152,17 @@ function json_read(id) {
 	self.$get(self, self.callback());
 }
 
+function json_stats(id) {
+	var self = this;
+	self.id = id;
+	self.$workflow('stats', self, self.callback());
+}
+
+function json_clear() {
+	var self = this;
+	self.$workflow('clear', self, self.callback());
+}
+
 // ==========================================================================
 // DASHBOARD
 // ==========================================================================
@@ -225,9 +239,13 @@ function json_blogs_codelists() {
 	self.json({ categories: F.global.blogs, tags: F.global.blogstags });
 }
 
-function json_blogs_stats() {
+function json_blogs_stats(id) {
 	var self = this;
-	NOSQL('blogs').counter.count(self.body, self.callback());
+	var counter = NOSQL('blogs').counter;
+	if (id)
+		counter.monthly(id, self.callback());
+	else
+		counter.count(self.body, self.callback());
 }
 
 function json_blogs_preview() {

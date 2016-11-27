@@ -93,8 +93,11 @@ NEWSCHEMA('Blog').make(function(schema) {
 			model.datecreated = F.datetime;
 			model.countcomments = 0;
 			model.datecommented = null;
-		} else
+			model.admincreated = controller.user.name;
+		} else {
 			model.dateupdated = F.datetime;
+			model.adminupdated = controller.user.name;
+		}
 
 		if (!model.draft && model.draft_old) {
 			model.datecreated = F.datetime;
@@ -102,7 +105,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 		}
 
 		model.search = ((model.name || '') + ' ' + (model.body || '')).keywords(true, true).join(' ').max(1000);
-		model.author = controller.user.name || '';
+		model.author = controller.user.name;
 
 		var category = F.global.blogs.find('name', model.category);
 		if (category)
