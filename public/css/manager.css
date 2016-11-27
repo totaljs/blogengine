@@ -101,6 +101,12 @@ canvas { display: block; }
 .oauth2callback input { width: 100%; color: #505050; padding: 5px; cursor: text; background: #F8F8F8; border: 0; }
 .oauth2callback div { margin-bottom: 3px; }
 
+.keyvalue { border-bottom: 1px dashed #D0D0D0; padding: 10px 0 5px; }
+.keyvalue .key { font-size: 10px; text-transform: uppercase; font-weight: bold; color: black; }
+.keyvalue .key:after { content: ':'; }
+.keyvalue .key .fa { margin-right: 4px; }
+.keyvalue .value { font-size: 14px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+
 @media(max-width: 996px) {
 	header .photo { display: none; }
 	header nav { display: none; }
