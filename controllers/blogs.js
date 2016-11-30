@@ -22,7 +22,7 @@ function view_blogs_category(category) {
 
 	self.repository.category = F.global.blogs.findItem('linker', category);
 	if (!self.repository.category)
-		return throw404();
+		return self.throw404();
 
 	self.query.category = category;
 	self.query.max = 10;
@@ -35,7 +35,7 @@ function view_blogs_detail(category, linker) {
 
 	self.repository.category = F.global.blogs.findItem('linker', category);
 	if (!self.repository.category)
-		return throw404();
+		return self.throw404();
 
 	self.memorize('detail.{0}.{1}'.format(category, linker), '5 minutes', DEBUG, function() {
 
