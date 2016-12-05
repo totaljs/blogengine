@@ -8,7 +8,7 @@ COMPONENT('click', function() {
 		if (typeof(value) === 'string')
 			self.set(self.parser(value));
 		else
-			self.get(self.attr('data-component-path'))(self);
+			self.get(self.attr('data-jc-path'))(self);
 	};
 
 	self.make = function() {
@@ -245,7 +245,7 @@ COMPONENT('dropdown', function() {
 		self.element.addClass('ui-dropdown-container');
 
 		var label = self.html();
-		var html = '<div class="ui-dropdown"><span class="fa fa-sort"></span><select data-component-bind="">{0}</select></div>'.format(options.join(''));
+		var html = '<div class="ui-dropdown"><span class="fa fa-sort"></span><select data-jc-bind="">{0}</select></div>'.format(options.join(''));
 		var builder = [];
 
 		if (label.length) {
@@ -335,9 +335,9 @@ COMPONENT('textbox', function() {
 		attrs.attr('type', self.type === 'password' ? self.type : 'text');
 		attrs.attr('placeholder', self.attr('data-placeholder'));
 		attrs.attr('maxlength', self.attr('data-maxlength'));
-		attrs.attr('data-component-keypress', self.attr('data-component-keypress'));
-		attrs.attr('data-component-keypress-delay', self.attr('data-component-keypress-delay'));
-		attrs.attr('data-component-bind', '');
+		attrs.attr('data-jc-keypress', self.attr('data-jc-keypress'));
+		attrs.attr('data-jc-keypress-delay', self.attr('data-jc-keypress-delay'));
+		attrs.attr('data-jc-bind', '');
 
 		tmp = self.attr('data-align');
 		tmp && attrs.attr('class', 'ui-' + tmp);
@@ -428,7 +428,7 @@ COMPONENT('textarea', function() {
 
 		var is = false;
 		var type = typeof(value);
-		if (input.prop('disabled') || isRequired)
+		if (input.prop('disabled') || !isRequired)
 			return true;
 
 		if (type === 'undefined' || type === 'object')
@@ -481,7 +481,7 @@ COMPONENT('textarea', function() {
 
 		builder = [];
 		builder.push('<div class="ui-textarea-label{0}">'.format(isRequired ? ' ui-textarea-label-required' : ''));
-		icon && builder.push('<span class="fa {0}"></span> '.format(icon));
+		icon && builder.push('<span class="fa {0}"></span>'.format(icon));
 		builder.push(content);
 		builder.push(':</div><div class="ui-textarea">{0}</div>'.format(html));
 
@@ -552,7 +552,7 @@ COMPONENT('repeater', function() {
 		var html = element.html();
 		element.remove();
 		self.template = Tangular.compile(html);
-		recompile = html.indexOf('data-component="') !== -1;
+		recompile = html.indexOf('data-jc="') !== -1;
 	};
 
 	self.setter = function(value) {
@@ -604,19 +604,49 @@ COMPONENT('error', function() {
 
 COMPONENT('cookie', function() {
 	var self = this;
-	self.readonly();
 	self.singleton();
+	self.readonly();
+
+	self.cancel = function() {
+		document.cookie.split(';').forEach(function(key) {
+			jC.cookies.set(key.split('=')[0], '', '-2 days');
+		});
+		try {
+			Object.keys(localStorage).forEach(function(key) {
+				localStorage.removeItem(key);
+			});
+		} catch (e) {}
+		location.href = 'about:blank';
+		return self;
+	};
+
 	self.make = function() {
-		var cookie = localStorage.getItem('cookie');
+
+		var cookie;
+
+		// private mode
+		try {
+			cookie = localStorage.getItem('cookie');
+		} catch (e) {}
+
 		if (cookie) {
 			self.element.addClass('hidden');
 			return;
 		}
 
 		self.element.removeClass('hidden').addClass('ui-cookie');
-		self.element.append('<button>' + (self.attr('data-button') || 'OK') + '</button>');
+		self.element.append('<button name="agree">' + (self.attr('data-agree') || 'OK') + '</button>');
+		self.element.append('<button name="cancel">' + (self.attr('data-cancel') || 'Cancel') + '</button>');
+
 		self.element.on('click', 'button', function() {
-			localStorage.setItem('cookie', '1');
+
+			if (this.name === 'cancel')
+				return self.cancel();
+
+			// private mode
+			try {
+				localStorage.setItem('cookie', '1');
+			} catch (e) {}
 			self.element.addClass('hidden');
 		});
 	};
@@ -827,7 +857,7 @@ COMPONENT('grid', function() {
 		self.template = Tangular.compile(element.html());
 		self.element.on('click', 'tr', function() {});
 		self.element.addClass('ui-grid');
-		self.html('<div><div class="ui-grid-page"></div><table width="100%" cellpadding="0" cellspacing="0" border="0"><tbody></tbody></table></div><div data-component="pagination" data-component-path="{0}" data-max="8" data-pages="{1}" data-items="{2}" data-target-path="{3}"></div>'.format(self.path, self.attr('data-pages'), self.attr('data-items'), self.attr('data-pagination-path')));
+		self.html('<div><div class="ui-grid-page"></div><table width="100%" cellpadding="0" cellspacing="0" border="0"><tbody></tbody></table></div><div data-jc="pagination" data-jc-path="{0}" data-max="8" data-pages="{1}" data-items="{2}" data-target-path="{3}"></div>'.format(self.path, self.attr('data-pages'), self.attr('data-items'), self.attr('data-pagination-path')));
 		self.element.on('click', 'button', function() {
 			switch (this.name) {
 				default:
@@ -2251,10 +2281,10 @@ jC.formatter(function(path, value, type) {
 
 	if (type === 'date') {
 		if (value instanceof Date)
-			return value.format(this.attr('data-component-format'));
+			return value.format(this.attr('data-jc-format'));
 		if (!value)
 			return value;
-		return new Date(Date.parse(value)).format(this.attr('data-component-format'));
+		return new Date(Date.parse(value)).format(this.attr('data-jc-format'));
 	}
 
 	if (type !== 'currency')

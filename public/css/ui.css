@@ -188,9 +188,10 @@ button { outline: 0; }
 .ui-textbox button { background-color: transparent; border: 0; padding: 0; margin: 0; }
 .ui-textbox .fa-caret-up, .ui-textbox .fa-caret-down { display:block; line-height: 9px; cursor: pointer; }
 .ui-textbox .fa-calendar { cursor: pointer; }
+
 .ui-textarea { border: 2px solid #E0E0E0; padding: 4px 5px; border-radius: 2px; position: relative; display: block; width: 100%; background-color: white; }
 .ui-textarea textarea { border: 0; width: 100%; outline: 0; font: normal 14px Arial; color: black; resize: none; min-height: 50px; background-color: white; padding: 0; }
-.ui-textarea-label { margin-bottom: 5px; font-size: 12px; text-align: left; }
+.ui-textarea-label { margin-bottom: 5px; font-size: 12px; text-align: left; color: #656D78; }
 .ui-textarea-label .fa { width: 14px; }
 .ui-textarea-label-required:before { color: red; content: '***'; margin-right: 5px; }
 .ui-textarea-invalid { border-color: #E7B8B8 !important; background-color: #FFF3F3 !important; }
@@ -236,9 +237,10 @@ label span { vertical-align: middle; }
 .ui-error li { display: block; }
 .ui-error li .fa { width: 14px; }
 
-.ui-cookie { font-size: 11px; padding: 3px 20px 5px; border-bottom: 1px solid #E0E0E0; text-align: center; }
-.ui-cookie button { position: relative; display: inline-block; padding: 1px 5px; border-radius: 4px; font-size: 10px; background-color: black; color: white; border: 0; margin-left: 5px; cursor: pointer; outline: 0; }
+.ui-cookie { font-size: 11px; padding: 3px 20px 5px; border-bottom: 1px solid #E0E0E0; text-align: center; background-color: white; }
+.ui-cookie button { position: relative; display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 10px; background-color: black; color: white; border: 0; margin-left: 5px; cursor: pointer; outline: 0; }
 .ui-cookie button:hover { background-color: #303030; }
+.ui-cookie button[name="cancel"] { background-color: #F0F0F0; color: gray; }
 
 .ui-message { background-color: rgba(255,255,255,0.9); position: fixed; left: 0; right: 0; bottom: 0; top: 0; z-index: 20; width: 100%; display: table; height: 100%; transition: 0.5s all; opacity: 0; }
 .ui-message > div { display: table-cell; vertical-align: middle; text-align: center; color: white; padding: 15px; }
