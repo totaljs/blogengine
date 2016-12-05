@@ -7,7 +7,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-3 col-sm-3 m">
-			<div data-jc="textbox" data-jc-path="settings.form.url" data-required="true">@(URL address)</div>
+			<div data-jc="textbox" data-jc-path="settings.form.url" data-required="true" data-placeholder="https://blog.totaljs.com">@(URL address)</div>
 			<div class="help">@(It's used in payments and email messages.)</div>
 		</div>
 		<div class="col-md-3 col-sm-3 m">
@@ -58,6 +58,7 @@
 	</div>
 	<hr />
 	<br />
+	<div data-jc="error" data-jc-path="settings.form.response"></div>
 	<div class="row">
 		<div class="col-md-4 m col-md-offset-4">
 			<div data-jc="validation" data-jc-path="settings.form">
@@ -127,13 +128,17 @@ function settings_save() {
 	settings.form.users = settings.form.users.items;
 
 	var loading = FIND('loading').show();
-	AJAX('PUT {0}/api/settings/'.format(managerurl), settings.form, function() {
+	AJAX('PUT {0}/api/settings/'.format(managerurl), settings.form, function(response) {
 
-		if (isError(arguments))
+		SET('settings.form.response', response);
+		RESET('settings.form.*');
+
+		if (response instanceof Array) {
+			loading.hide(500);
 			return;
+		}
 
 		success(true);
-		RESET('settings.form.*');
 		EXEC('blogs_refresh_codelists');
 
 		// Restore users list
