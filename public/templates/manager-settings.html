@@ -102,121 +102,103 @@
 </div>
 
 <script>
-var settings = {};
-settings.form = {};
-settings.cache = {};
+	var settings = {};
+	settings.form = {};
+	settings.cache = {};
 
-function settings_refresh() {
-	AJAX('GET {0}/api/settings/'.format(managerurl), function(response) {
+	function settings_refresh() {
+		AJAX('GET {0}/api/settings/'.format(managerurl), function(response) {
+			if (response.users)
+				response.users = { items: response.users, page: 1, count: response.users.length, pages: 1, limit: 100 };
+			else
+				response.users = settings_users_default();
+			SET('settings.form', response);
+		});
+	}
 
-		if (isError(arguments))
-			return;
+	function settings_save() {
 
-		if (response.users)
-			response.users = { items: response.users, page: 1, count: response.users.length, pages: 1, limit: 100 };
-		else
-			response.users = settings_users_default();
+		// Prepare users
+		var tmp = settings.form.users;
+		settings.form.users = settings.form.users.items;
 
-		SET('settings.form', response);
-	});
-}
+		var loading = FIND('loading').show();
+		AJAX('PUT {0}/api/settings/'.format(managerurl), settings.form, function(response) {
 
-function settings_save() {
-
-	// Prepare users
-	var tmp = settings.form.users;
-	settings.form.users = settings.form.users.items;
-
-	var loading = FIND('loading').show();
-	AJAX('PUT {0}/api/settings/'.format(managerurl), settings.form, function(response) {
-
-		SET('settings.form.response', response);
-		RESET('settings.form.*');
-
-		if (response instanceof Array) {
+			SET('settings.form.response', response);
+			RESET('settings.form.*');
 			loading.hide(500);
-			return;
-		}
 
-		success(true);
-		EXEC('blogs_refresh_codelists');
+			if (response instanceof Array)
+				return;
 
-		// Restore users list
-		settings.form.users = tmp;
+			success(true);
+			EXEC('blogs_refresh_codelists');
 
-		if (settings.cache.currency === settings.form.currency) {
-			loading.hide(500);
-			return;
-		}
+			// Restore users list
+			settings.form.users = tmp;
+		});
+	}
 
-		// Refresh settings
-		setTimeout(function() {
-			location.reload();
-		}, 3000);
+	function settings_users_add() {
+		SET('settings.formuser', {}, true);
+		SET('common.form', 'settings');
+	}
+
+	Tangular.register('roles', function(value, separator) {
+		return value instanceof Array && value.length ? value.join(separator) : '<em>@(super admin)</em>';
 	});
-}
 
-function settings_users_add() {
-	SET('settings.formuser', {}, true);
-	SET('common.form', 'settings');
-}
+	// Users grid
+	ON('#settings.users', function(component) {
+		component.click = function(index, row, button) {
+			switch($(button).attr('name')) {
 
-Tangular.register('roles', function(value, separator) {
-	if (!(value instanceof Array) || !value.length)
-		return '<em>@(super admin)</em>';
-	return value.join(separator);
-});
+				case 'edit':
+					var form = $.extend({}, row);
+					form.$index = index;
+					SET('settings.formuser', form, true);
+					SET('common.form', 'settings');
+					break;
 
-// Users grid
-ON('#settings.users', function(component) {
-	component.click = function(index, row, button) {
-		switch($(button).attr('name')) {
+				case 'remove':
+					settings.form.users.items.splice(index, 1);
+					settings.form.users.count = settings.form.users.items.length;
+					UPDATE('settings.form.users');
+					CHANGE('settings.form.*', true);
+					break;
+			}
+		};
+	});
 
-			case 'edit':
-				var form = $.extend({}, row);
-				form.$index = index;
-				SET('settings.formuser', form, true);
-				SET('common.form', 'settings');
-				break;
+	// Users form
+	ON('#settings.formuser', function(component) {
+		component.submit = function(hide) {
 
-			case 'remove':
-				settings.form.users.items.splice(index, 1);
-				settings.form.users.count = settings.form.users.items.length;
-				UPDATE('settings.form.users');
-				CHANGE('settings.form.*', true);
-				break;
-		}
-	};
-});
+			if (!settings.form.users)
+				settings.form.users = settings_users_default();
 
-// Users form
-ON('#settings.formuser', function(component) {
-	component.submit = function(hide) {
+			var users = settings.form.users.items;
+			var is = false;
 
-		if (!settings.form.users)
-			settings.form.users = settings_users_default();
+			if (settings.formuser.$index !== undefined) {
+				users[settings.formuser.$index].name = settings.formuser.name.trim();
+				users[settings.formuser.$index].login = settings.formuser.login.trim();
+				users[settings.formuser.$index].password = settings.formuser.password.trim();
+				users[settings.formuser.$index].roles = settings.formuser.roles;
+			} else
+				users.push({ name: settings.formuser.name.trim(), login: settings.formuser.login.trim(), password: settings.formuser.password.trim(), roles: settings.formuser.roles });
 
-		var users = settings.form.users.items;
-		var is = false;
+			settings.form.users.count = users.length;
+			UPDATE('settings.form.users');
+			CHANGE('settings.form.*', true);
+			hide();
+		};
+	});
 
-		if (settings.formuser.$index !== undefined) {
-			users[settings.formuser.$index].name = settings.formuser.name.trim();
-			users[settings.formuser.$index].login = settings.formuser.login.trim();
-			users[settings.formuser.$index].password = settings.formuser.password.trim();
-			users[settings.formuser.$index].roles = settings.formuser.roles;
-		} else
-			users.push({ name: settings.formuser.name.trim(), login: settings.formuser.login.trim(), password: settings.formuser.password.trim(), roles: settings.formuser.roles });
+	function settings_users_default() {
+		return { items: [], page: 1, pages: 1, count: 0, limit: 100 };
+	}
 
-		settings.form.users.count = users.length;
-		UPDATE('settings.form.users');
-		CHANGE('settings.form.*', true);
-		hide();
-	};
-});
-
-function settings_users_default() {
-	return { items: [], page: 1, pages: 1, count: 0, limit: 100 };
-}
-
-settings_refresh();
+	settings_refresh();
 </script>
