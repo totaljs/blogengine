@@ -17,11 +17,11 @@ exports.install = function() {
 
 	// BLOGS
 	F.route(url + '/api/blogs/',               json_query,  ['*Blog']);
-	F.route(url + '/api/blogs/',               json_save,   ['*Blog', 'post'], 500);
+	F.route(url + '/api/blogs/',               json_save,   ['*Blog', 'post'], 512);
 	F.route(url + '/api/blogs/{id}/',          json_read,   ['*Blog']);
 	F.route(url + '/api/blogs/',               json_remove, ['*Blog', 'delete']);
 	F.route(url + '/api/blogs/codelists/',     json_blogs_codelists);
-	F.route(url + '/api/blogs/preview/',       json_blogs_preview, ['post']);
+	F.route(url + '/api/blogs/preview/',       json_blogs_preview, ['post'], 512);
 	F.route(url + '/api/blogs/stats/',         json_blogs_stats, ['post']);
 	F.route(url + '/api/blogs/{id}/stats/',    json_blogs_stats);
 
