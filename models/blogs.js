@@ -125,7 +125,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 			if (newbie)
 				return;
 
-			model.datebackup = new Date();
+			model.datebackup = F.datetime;
 			NOSQL('blogs_backup').insert(model);
 		};
 
