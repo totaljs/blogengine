@@ -7,17 +7,17 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-3 col-sm-3 m">
-			<div data-component="textbox" data-component-path="settings.form.url" data-required="true">@(URL address)</div>
+			<div data-jc="textbox" data-jc-path="settings.form.url" data-required="true" data-placeholder="https://blog.totaljs.com">@(URL address)</div>
 			<div class="help">@(It's used in payments and email messages.)</div>
 		</div>
 		<div class="col-md-3 col-sm-3 m">
-			<div data-component="textbox" data-component-path="settings.form.emailcontactform" data-required="true" data-component-type="email">@(Email for contact form)</div>
+			<div data-jc="textbox" data-jc-path="settings.form.emailcontactform" data-required="true" data-jc-type="email">@(Email for contact form)</div>
 		</div>
 		<div class="col-md-3 col-sm-3 m">
-			<div data-component="textbox" data-component-path="settings.form.emailreply" data-required="true" data-component-type="email">@(Email for answers)</div>
+			<div data-jc="textbox" data-jc-path="settings.form.emailreply" data-required="true" data-jc-type="email">@(Email for answers)</div>
 		</div>
 		<div class="col-md-3 col-sm-3 m">
-			<div data-component="textbox" data-component-path="settings.form.emailsender" data-required="true" data-component-type="email">@(Email for sending)</div>
+			<div data-jc="textbox" data-jc-path="settings.form.emailsender" data-required="true" data-jc-type="email">@(Email for sending)</div>
 		</div>
 	</div>
 </div>
@@ -28,24 +28,23 @@
 	<br />
 	<div class="row">
 		<div class="col-md-6 m">
-			<div data-component="textboxtags" data-component-path="settings.form.blogs">@(Blogs categories)</div>
-			<div class="help">@(E.g. <code>Tutorials</code> <code>Design</code>)</div>
+			<div data-jc="textboxlist" data-jc-path="settings.form.blogs" data-placeholder="@(Type a category name and press enter)">@(Blogs categories)</div>
+			<div class="help" style="margin-top:14px">@(E.g. <code>Tutorials</code> <code>Design</code>)</div>
 		</div>
 		<div class="col-md-6 m">
-			<div data-component="textboxtags" data-component-path="settings.form.languages">@(Supported languages)</div>
+			<div data-jc="textboxtags" data-jc-path="settings.form.languages">@(Supported languages)</div>
 			<div class="help">@(E.g. <code>en</code> <code>sk</code> <code>ru</code>)</div>
 		</div>
 	</div>
-	<br />
 </div>
 <hr />
 <br />
 
 <div class="container">
 	<div class="help" style="margin-top:10px">@(For creating another access into the administration click on to below button:)</div>
-	<div class="mt5"><a href="javascript:void(0)" data-component="click" data-component-path="settings_users_add"><span class="fa fa-user mr5"></span>@(Add new administrator)</a></div>
+	<div class="mt5"><a href="javascript:void(0)" class="exec" data-exec="settings_users_add"><span class="fa fa-user mr5"></span>@(Add new administrator)</a></div>
 	<br />
-	<div data-component="grid" data-component-path="settings.form.users" data-max="1000000" data-component-id="settings.users">
+	<div data-jc="grid" data-jc-path="settings.form.users" data-max="1000000" data-jc-id="settings.users">
 		<script type="text/html">
 		<tr>
 			<td><span class="fa fa-user"></span> {{ name }}</td>
@@ -59,42 +58,43 @@
 	</div>
 	<hr />
 	<br />
+	<div data-jc="error" data-jc-path="settings.form.response"></div>
 	<div class="row">
 		<div class="col-md-4 m col-md-offset-4">
-			<div data-component="validation" data-component-path="settings.form">
-				<button class="button b" data-component="click" data-component-path="settings_save">@(SAVE SETTINGS)</button>
+			<div data-jc="validation" data-jc-path="settings.form">
+				<button class="button b exec" data-exec="settings_save">@(SAVE SETTINGS)</button>
 			</div>
 		</div>
 	</div>
 	<br />
 </div>
 
-<div data-component="form" data-title="@(User form)" data-component-path="common.form" data-if="value === 'settings'" data-width="500px" data-component-id="settings.formuser">
+<div data-jc="form" data-title="@(User form)" data-jc-path="common.form" data-if="value === 'settings'" data-width="500px" data-jc-id="settings.formuser" class="hidden">
 	<div class="padding npb">
 		<div class="row">
 			<div class="col-md-12 m">
-				<div data-component="textbox" data-component-path="settings.formuser.name" data-required="true">@(User name)</div>
+				<div data-jc="textbox" data-jc-path="settings.formuser.name" data-required="true">@(User name)</div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12 m">
-				<div data-component="textbox" data-component-path="settings.formuser.login" data-required="true">@(Login name)</div>
+				<div data-jc="textbox" data-jc-path="settings.formuser.login" data-required="true">@(Login name)</div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12 m">
-				<div data-component="textbox" data-component-path="settings.formuser.password" data-required="true">@(Login password)</div>
+				<div data-jc="textbox" data-jc-path="settings.formuser.password" data-required="true">@(Login password)</div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12 m">
-				<div data-component="dropdowncheckbox" data-component-path="settings.formuser.roles" data-options="@(dashboard)|dashboard;@(blogs)|blogs;@(comments)|comments;@(newsletter)|newsletter;@(settings)|settings">@(Roles)</div>
+				<div data-jc="dropdowncheckbox" data-jc-path="settings.formuser.roles" data-options="@(dashboard)|dashboard;@(blogs)|blogs;@(comments)|comments;@(newsletter)|newsletter;@(settings)|settings">@(Roles)</div>
 				<div class="help">@(If the user roles will be empty then the user will be access to all functionality.)</div>
 			</div>
 		</div>
 	</div>
 	<div class="ui-form-buttons">
-		<div data-component="validation" data-component-path="settings.formuser">
+		<div data-jc="validation" data-jc-path="settings.formuser">
 			<button name="submit">@(SUBMIT)</button>
 		</div>
 		<button name="cancel">@(Cancel)</button>
@@ -102,117 +102,103 @@
 </div>
 
 <script>
-var settings = {};
-settings.form = {};
-settings.cache = {};
+	var settings = {};
+	settings.form = {};
+	settings.cache = {};
 
-function settings_refresh() {
-	AJAX('GET {0}/api/settings/'.format(managerurl), function(response) {
+	function settings_refresh() {
+		AJAX('GET {0}/api/settings/'.format(managerurl), function(response) {
+			if (response.users)
+				response.users = { items: response.users, page: 1, count: response.users.length, pages: 1, limit: 100 };
+			else
+				response.users = settings_users_default();
+			SET('settings.form', response);
+		});
+	}
 
-		if (isError(arguments))
-			return;
+	function settings_save() {
 
-		if (response.users)
-			response.users = { items: response.users, page: 1, count: response.users.length, pages: 1, limit: 100 };
-		else
-			response.users = settings_users_default();
+		// Prepare users
+		var tmp = settings.form.users;
+		settings.form.users = settings.form.users.items;
 
-		SET('settings.form', response);
-	});
-}
+		var loading = FIND('loading').show();
+		AJAX('PUT {0}/api/settings/'.format(managerurl), settings.form, function(response) {
 
-function settings_save() {
-
-	// Prepare users
-	var tmp = settings.form.users;
-	settings.form.users = settings.form.users.items;
-
-	var loading = FIND('loading').show();
-	AJAX('PUT {0}/api/settings/'.format(managerurl), settings.form, function() {
-
-		if (isError(arguments))
-			return;
-
-		success(true);
-		RESET('settings.form.*');
-		EXEC('blogs_refresh_codelists');
-
-		// Restore users list
-		settings.form.users = tmp;
-
-		if (settings.cache.currency === settings.form.currency) {
+			SET('settings.form.response', response);
+			RESET('settings.form.*');
 			loading.hide(500);
-			return;
-		}
 
-		// Refresh settings
-		setTimeout(function() {
-			location.reload();
-		}, 3000);
+			if (response instanceof Array)
+				return;
+
+			success(true);
+			EXEC('blogs_refresh_codelists');
+
+			// Restore users list
+			settings.form.users = tmp;
+		});
+	}
+
+	function settings_users_add() {
+		SET('settings.formuser', {}, true);
+		SET('common.form', 'settings');
+	}
+
+	Tangular.register('roles', function(value, separator) {
+		return value instanceof Array && value.length ? value.join(separator) : '<em>@(super admin)</em>';
 	});
-}
 
-function settings_users_add() {
-	SET('settings.formuser', {}, true);
-	SET('common.form', 'settings');
-}
+	// Users grid
+	ON('#settings.users', function(component) {
+		component.click = function(index, row, button) {
+			switch($(button).attr('name')) {
 
-Tangular.register('roles', function(value, separator) {
-	if (!(value instanceof Array) || !value.length)
-		return '<em>@(super admin)</em>';
-	return value.join(separator);
-});
+				case 'edit':
+					var form = $.extend({}, row);
+					form.$index = index;
+					SET('settings.formuser', form, true);
+					SET('common.form', 'settings');
+					break;
 
-// Users grid
-ON('#settings.users', function(component) {
-	component.click = function(index, row, button) {
-		switch($(button).attr('name')) {
+				case 'remove':
+					settings.form.users.items.splice(index, 1);
+					settings.form.users.count = settings.form.users.items.length;
+					UPDATE('settings.form.users');
+					CHANGE('settings.form.*', true);
+					break;
+			}
+		};
+	});
 
-			case 'edit':
-				var form = $.extend({}, row);
-				form.$index = index;
-				SET('settings.formuser', form, true);
-				SET('common.form', 'settings');
-				break;
+	// Users form
+	ON('#settings.formuser', function(component) {
+		component.submit = function(hide) {
 
-			case 'remove':
-				settings.form.users.items.splice(index, 1);
-				settings.form.users.count = settings.form.users.items.length;
-				UPDATE('settings.form.users');
-				CHANGE('settings.form.*', true);
-				break;
-		}
-	};
-});
+			if (!settings.form.users)
+				settings.form.users = settings_users_default();
 
-// Users form
-ON('#settings.formuser', function(component) {
-	component.submit = function(hide) {
+			var users = settings.form.users.items;
+			var is = false;
 
-		if (!settings.form.users)
-			settings.form.users = settings_users_default();
+			if (settings.formuser.$index !== undefined) {
+				users[settings.formuser.$index].name = settings.formuser.name.trim();
+				users[settings.formuser.$index].login = settings.formuser.login.trim();
+				users[settings.formuser.$index].password = settings.formuser.password.trim();
+				users[settings.formuser.$index].roles = settings.formuser.roles;
+			} else
+				users.push({ name: settings.formuser.name.trim(), login: settings.formuser.login.trim(), password: settings.formuser.password.trim(), roles: settings.formuser.roles });
 
-		var users = settings.form.users.items;
-		var is = false;
+			settings.form.users.count = users.length;
+			UPDATE('settings.form.users');
+			CHANGE('settings.form.*', true);
+			hide();
+		};
+	});
 
-		if (settings.formuser.$index !== undefined) {
-			users[settings.formuser.$index].name = settings.formuser.name.trim();
-			users[settings.formuser.$index].login = settings.formuser.login.trim();
-			users[settings.formuser.$index].password = settings.formuser.password.trim();
-			users[settings.formuser.$index].roles = settings.formuser.roles;
-		} else
-			users.push({ name: settings.formuser.name.trim(), login: settings.formuser.login.trim(), password: settings.formuser.password.trim(), roles: settings.formuser.roles });
+	function settings_users_default() {
+		return { items: [], page: 1, pages: 1, count: 0, limit: 100 };
+	}
 
-		settings.form.users.count = users.length;
-		UPDATE('settings.form.users');
-		CHANGE('settings.form.*', true);
-		hide();
-	};
-});
-
-function settings_users_default() {
-	return { items: [], page: 1, pages: 1, count: 0, limit: 100 };
-}
-
-settings_refresh();
+	settings_refresh();
 </script>

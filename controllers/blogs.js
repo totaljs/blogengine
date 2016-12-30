@@ -9,6 +9,11 @@ function view_blogs() {
 	var self = this;
 	self.query.max = 10;
 	self.query.draft = false;
+
+	// Total.js monitoring fulltext stats
+	self.query.search && MODULE('webcounter').inc('fulltext');
+
+	// DB
 	self.$query(self, self.callback('all'));
 }
 
@@ -16,7 +21,6 @@ function view_blogs_category(category) {
 	var self = this;
 
 	self.repository.category = F.global.blogs.findItem('linker', category);
-
 	if (!self.repository.category)
 		return self.throw404();
 
@@ -31,14 +35,14 @@ function view_blogs_detail(category, linker) {
 
 	self.repository.category = F.global.blogs.findItem('linker', category);
 	if (!self.repository.category)
-		return throw404();
+		return self.throw404();
 
 	self.memorize('detail.{0}.{1}'.format(category, linker), '5 minutes', DEBUG, function() {
 
 		self.query.linker = linker;
 		self.query.category = category;
 
-		self.$get(self, function(err, response) {
+		self.$read(self, function(err, response) {
 
 			if (err || !response)
 				return self.throw404(err);
@@ -49,7 +53,17 @@ function view_blogs_detail(category, linker) {
 			}
 
 			response.body = markdown(response.body);
-			self.view('detail', response);
+
+			self.query.skip = response.id;
+			self.query.max = 8;
+			self.query.draft = false;
+			self.query.page = 1;
+
+			self.$query(self, function(err, items) {
+				response.others = items;
+				self.view('detail', response);
+			});
+
 		});
 	});
 }

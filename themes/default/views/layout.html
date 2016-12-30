@@ -7,21 +7,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<meta name="robots" content="all,follow" />
 	<link rel="alternate" type="application/rss+xml" title="@{config.description}" href="/rss/" />
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,700&subset=latin,latin-ext" />
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/github.min.css" />
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
 	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
 </head>
 <body>
 
-	<div data-component="cookie" class="hidden">@(This site uses cookies for visitor statistics. By continuing to browse the site you are agreeing to our use of cookies.) <a href="/privacy/">@(Privacy Policy)</a></div>
-	<div data-component="message" data-button="@(Close)"></div>
-
-	@{if url !== '/'}
-	<div id="loading"></div>
-	@{fi}
+	<div data-jc="cookie" class="hidden">@(This site uses cookies for visitor statistics. By continuing to browse the site you are agreeing to our use of cookies.) <a href="/privacy/">@(Privacy Policy)</a></div>
+	<div data-jc="message" data-button="@(Close)"></div>
 
 	<div class="container">
 		<div class="content">
@@ -62,7 +58,7 @@
 						</div>
 						<div class="caption"><i class="fa fa-share-alt"></i>@(Follow us)</div>
 						<div class="newsletter-text">@(Join our mailing list. We'll inform you about new products and bug fixes.)</div>
-						<div class="newsletter" data-component="newsletter" data-success="@(Thank you.)">
+						<div class="newsletter" data-jc="newsletter" data-success="@(Thank you.)">
 							<div class="newsletter-button"><button><span class="fa fa-envelope"></span></button></div>
 							<div class="newsletter-input"><input type="text" placeholder="@(Join to newsletter)" /></div>
 						</div>
@@ -74,7 +70,7 @@
 		</div>
 		<footer>
 			<div>&copy; 2016, All rights reserved.</div>
-			<a href="https://www.totaljs.com">Totaljs.com Ltd</a>
+			<a href="https://www.totaljs.com">Powered by <strong>Total.js framework</strong></a>
 		</footer>
 	</div>
 
@@ -101,7 +97,7 @@
 			if (months < 12)
 				return @(months + ' ' + Tangular.helpers.pluralize(months, 'months', 'month', 'months', 'months') + ' ago');
 
-			var years = (month / 12) >> 0;
+			var years = (months / 12) >> 0;
 			return @(years + ' ' + Tangular.helpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago');
 		});
 

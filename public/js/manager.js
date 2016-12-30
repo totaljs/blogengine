@@ -1,3 +1,6 @@
+// Trims empty fields
+languages = languages.trim();
+
 var common = {};
 
 // Current page
@@ -18,10 +21,6 @@ $(document).ready(function() {
 	$(window).on('resize', resizer);
 	resizer();
 });
-
-function isError(arguments) {
-	return false;
-}
 
 // Because of login form
 if (window.su) {
@@ -60,10 +59,10 @@ jR.on('location', function(url) {
 function resizer() {
 	var h = $(window).height();
 	var el = $('#body');
-	if (!el.length)
-		return;
-	var t = el.offset().top + 100;
-	el.css('min-height', h - t);
+	if (el.length) {
+		var t = el.offset().top + 100;
+		el.css('min-height', h - t);
+	}
 }
 
 function success() {

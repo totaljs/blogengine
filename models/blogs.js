@@ -44,6 +44,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 
 		options.draft === false && filter.in('draft', false);
 		options.linker && filter.where('linker', '<>', options.linker);
+		options.skip && filter.where('id', '<>', options.skip);
 
 		filter.take(take);
 		filter.skip(skip);
@@ -92,8 +93,11 @@ NEWSCHEMA('Blog').make(function(schema) {
 			model.datecreated = F.datetime;
 			model.countcomments = 0;
 			model.datecommented = null;
-		} else
+			model.admincreated = controller.user.name;
+		} else {
 			model.dateupdated = F.datetime;
+			model.adminupdated = controller.user.name;
+		}
 
 		if (!model.draft && model.draft_old) {
 			model.datecreated = F.datetime;
@@ -101,7 +105,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 		}
 
 		model.search = ((model.name || '') + ' ' + (model.body || '')).keywords(true, true).join(' ').max(1000);
-		model.author = controller.user.name || '';
+		model.author = controller.user.name;
 
 		var category = F.global.blogs.find('name', model.category);
 		if (category)
@@ -121,7 +125,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 			if (newbie)
 				return;
 
-			model.datebackup = new Date();
+			model.datebackup = F.datetime;
 			NOSQL('blogs_backup').insert(model);
 		};
 

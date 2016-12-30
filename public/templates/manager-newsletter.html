@@ -1,23 +1,33 @@
 <div class="filter">
 	<div class="container">
 		<nav class="buttons">
-			<a href="javascript:void(0)" data-component="click" data-component-path="newsletter_clear"><i class="fa fa-trash"></i><span>@(Clear)</span></a>
+			<a href="javascript:void(0)" class="csvexport"><i class="fa fa-table"></i><span>@(Download <b>CSV</b>)</span></a>
 		</nav>
-		<div class="caption" style="margin-bottom:10px"><span class="fa fa-envelope mr5"></span> @(Registered email addresses)</div>
+		<div class="caption"><span class="fa fa-envelope mr5"></span> @(Newsletter)</div>
+		<div class="row">
+			<div class="col-md-3 m">
+				<div data-jc="textbox" data-jc-path="newsletter.filter.search" data-placeholder="@(Search newsletter ...)" data-jc-type="search"></div>
+				<div class="help" data-jc="template" data-jc-path="newsletter.grid"><script type="text/html">{{ count | pluralize(@('# items','# item','# items','# items')) }} / {{ pages | pluralize(@('# pages','# page','# pages','# pages')) }}</script></div>
+			</div>
+			<div class="col-md-3 m">
+				<div data-jc="dropdown" data-jc-path="newsletter.filter.language" data-source="languages" data-empty="@(All languages)"></div>
+			</div>
+			<div class="col-md-6 m">
+				<div data-jc="nosqlcounter" data-jc-path="newsletter.stats" style="height:48px" data-count="16"></div>
+				<div class="help"><i class="fa fa-bar-chart"></i>@(Stats for last 16 months)</div>
+			</div>
+		</div>
 	</div>
 </div>
+
 <div class="container">
-	<div class="ui-center" style="margin-top:10px">
-		<div class="fs11 silver">@(Read-only mode)</div>
-		<a href="javascript:void(0)" class="csvexport"><span class="fa fa-download mr5"></span>@(<b>Download CSV</b> with email addresses)</a>
-	</div>
-	<br />
-	<div data-component="grid" data-component-path="newsletter.grid" data-max="10000" data-page="@(Page: #)" data-pages="@(# pages,# page,# pages,# pages)" data-items="@(# items,# item,# items,# items)" data-empty="@(Database does not contain any data.)">
+	<div data-jc="grid" data-jc-path="newsletter.grid" data-jc-id="newsletter.grid" data-max="auto" data-page="@(Page: #)" data-pages="@(# pages,# page,# pages,# pages)" data-items="@(# items,# item,# items,# items)" data-empty="@(Database does not contain any data.)">
 		<script type="text/html">
 		<tr>
 			<td><span class="fa fa-envelope"></span> {{ email }}</td>
-			<td style="width:150px" class="silver hidden-xs">{{ ip }}</td>
-			<td style="width:120px" class="ui-center active">{{ datecreated }}</td>
+			<td style="width:120px" class="hidden-xs fs11 active"><i class="fa fa-language"></i> {{ if language }}{{ language }}{{ else }}@(unkown){{ fi }}</td>
+			<td style="width:160px" class="silver hidden-xs">{{ ip }}</td>
+			<td style="width:100px" class="ui-center active">{{ datecreated | format('@(yyyy-MM-dd)') }}</td>
 		</tr>
 		</script>
 	</div>
@@ -28,39 +38,28 @@
 
 	var newsletter = {};
 	newsletter.grid = {};
+	newsletter.filter = {};
+	newsletter.filter.page = 1;
 
-	function newsletter_refresh() {
-		AJAX('GET {0}/api/newsletter/'.format(managerurl), function(response) {
+	ON('#newsletter.grid', function(component) {
+		// Max items per page
+		newsletter.filter.max = component.max;
+		newsletter_refresh(true);
+	});
 
-			if (isError(arguments))
-				return;
+	// Watch for changes in newsletter filter
+	WATCH('newsletter.filter.*', function(path, value) {
+		!NOTMODIFIED('newsletter.filter', newsletter.filter) && newsletter_refresh(path !== 'newsletter.filter.page');
+	});
 
-			var csv = response.split('\n');
-			var arr = [];
-			csv.reverse();
-
-			for (var i = 0, length = csv.length; i < length; i++) {
-				var line = csv[i].split(';');
-				line[1] && arr.push({ email: line[0], ip: line[1], datecreated: line[3] });
-			}
-
-			SET('newsletter.grid', { items: arr, page: 1, pages: 1, count: arr.length, limit: 10000 });
-		});
+	// Method refreshes grid
+	function newsletter_refresh(reset) {
+		if (reset)
+			newsletter.filter.page = 1;
+		AJAX('GET {0}/api/newsletter/'.format(managerurl), newsletter.filter, 'newsletter.grid');
 	}
 
-	function newsletter_clear() {
-		FIND('confirm').confirm('@(Are you sure you want to clear newsletter list?)', ['@(Yes)', '@(Cancel)'], function(index) {
-			if (index)
-				return;
-			SETTER('loading', 'show');
-			AJAX('GET {0}/api/newsletter/clear/'.format(managerurl), function(response) {
-				SETTER('loading', 'hide', 1000);
-				newsletter_refresh();
-			});
-		});
-	}
-
-	$('.csvexport').attr('href', '{0}/api/newsletter/csv/'.format(managerurl));
-	newsletter_refresh();
+	AJAX('GET {0}/api/newsletter/stats/'.format(managerurl), 'newsletter.stats');
+	$('.csvexport').attr('href', '{0}/newsletter/export/'.format(managerurl));
 
 </script>

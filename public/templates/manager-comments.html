@@ -2,22 +2,26 @@
 	<div class="container">
 		<div class="caption"><span class="fa fa-pencil mr5"></span> @(Comments)</div>
 		<div class="row">
-			<div class="col-md-3 col-sm-6 m">
-				<div data-component="textbox" data-component-path="comments.filter.search" data-placeholder="@(Search comments ...)" data-control-icon="fa-search"></div>
-				<div class="help" data-component="template" data-component-path="comments.grid"><script type="text/html">{{ count | pluralize(@('# items','# item','# items','# items')) }} / {{ pages | pluralize(@('# pages','# page','# pages','# pages')) }}</script></div>
+			<div class="col-md-4 m">
+				<div data-jc="textbox" data-jc-path="comments.filter.search" data-placeholder="@(Search comments ...)" data-jc-type="search"></div>
+				<div class="help" data-jc="template" data-jc-path="comments.grid"><script type="text/html">{{ count | pluralize(@('# items','# item','# items','# items')) }} / {{ pages | pluralize(@('# pages','# page','# pages','# pages')) }}</script></div>
+			</div>
+			<div class="col-md-8 m">
+				<div data-jc="nosqlcounter" data-jc-path="comments.stats" style="height:48px" data-count="24"></div>
+				<div class="help"><i class="fa fa-bar-chart"></i>@(Stats for last 24 months)</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 <div class="container">
-	<div data-component="grid" data-component-path="comments.grid" data-pagination-path="comments.filter.page" data-component-id="comments.grid" data-max="auto" data-page="@(Page: #)" data-pages="@(# pages,# page,# pages,# pages)" data-items="@(# items,# item,# items,# items)" data-empty="@(Database does not contain any data.)">
+	<div data-jc="grid" data-jc-path="comments.grid" data-pagination-path="comments.filter.page" data-jc-id="comments.grid" data-max="auto" data-page="@(Page: #)" data-pages="@(# pages,# page,# pages,# pages)" data-items="@(# items,# item,# items,# items)" data-empty="@(Database does not contain any data.)">
 		<script type="text/html">
 		<tr>
 			<td style="width:300px" class="active">{{ name }}</td>
 			<td class="fs11 silver">{{ if approved }}<span class="badge badge-green b mr5">@(APPROVED)</span>{{ fi }}{{ body }}</td>
 			<td style="width:150px"{{ if admin }} class="red"{{ fi }}><i class="fa fa-male mr5"></i>{{ user }}</td>
-			<td style="width:100px" class="silver ui-center hidden-xs">{{ datecreated | format('@(yyyy-MM-dd)') }}</td>
+			<td style="width:120px" class="silver hidden-xs">{{ datecreated | time }}</td>
 			<td style="width:80px" class="ui-right">
 				<button name="edit" title="@(Edit)"><span class="fa fa-pencil"></span></button>
 				<button name="remove" title="@(Remove)"><span class="fa fa-times"></span></button>
@@ -27,10 +31,10 @@
 	</div>
 </div>
 
-<div data-component="form" data-title="@(Comment form)" data-component-path="common.form" data-if="value === 'comments'" data-width="600px" data-component-id="comments.form" data-autocenter="false">
+<div data-jc="form" data-title="@(Comment form)" data-jc-path="common.form" data-if="value === 'comments'" data-width="600px" data-jc-id="comments.form" data-autocenter="false" class="hidden">
 	<div class="padding">
 
-		<div data-component="template" data-component-path="comments.form.blog">
+		<div data-jc="template" data-jc-path="comments.form.blog">
 			<script type="text/html">
 				<div class="b">{{ name }}</div>
 				<div style="line-height:16px;font-size:12px" class="mt5">{{ perex }}</div>
@@ -40,23 +44,23 @@
 
 		<div class="row">
 			<div class="col-md-6 m">
-				<div data-component="textbox" data-component-path="comments.form.user" data-required="true">@(User)</div>
+				<div data-jc="textbox" data-jc-path="comments.form.user" data-required="true">@(User)</div>
 			</div>
 			<div class="col-md-6 m">
-				<div data-component="textbox" data-component-path="comments.form.email" data-required="true">@(Email)</div>
+				<div data-jc="textbox" data-jc-path="comments.form.email" data-required="true">@(Email)</div>
 			</div>
 		</div>
-		<div class="b red" data-component="checkbox" data-component-path="comments.form.approved">@(This comment is approved)</div>
-		<div data-component="checkbox" data-component-path="comments.form.admin">@(Mark the comment as admin comment)</div>
+		<div class="b red" data-jc="checkbox" data-jc-path="comments.form.approved">@(This comment is approved)</div>
+		<div data-jc="checkbox" data-jc-path="comments.form.admin">@(Mark the comment as admin comment)</div>
 	</div>
 	<hr style="margin:0 0 8px" />
 	<div class="padding">
-		<div data-component="textarea" data-component-path="comments.form.body" data-height="200px" data-required="true" data-component-id="comments-body">@(Body)</div>
+		<div data-jc="textarea" data-jc-path="comments.form.body" data-height="200px" data-required="true" data-jc-id="comments-body">@(Body)</div>
 	</div>
 	<br />
-	<div data-component="error" data-component-path="comments.response"></div>
+	<div data-jc="error" data-jc-path="comments.response"></div>
 	<div class="ui-form-buttons">
-		<div data-component="validation" data-component-path="comments.form">
+		<div data-jc="validation" data-jc-path="comments.form">
 			<button name="submit">@(SUBMIT)</button>
 		</div>
 		<button name="cancel">@(Cancel)</button>
@@ -100,8 +104,6 @@
 							return;
 						var loading = FIND('loading');
 						AJAX('DELETE {0}/api/comments/'.format(managerurl), { id: row.id }, function() {
-							if (isError(arguments))
-								return;
 							loading.hide(500);
 							comments_refresh();
 						});
@@ -122,9 +124,6 @@
 		component.submit = function(hide) {
 			var loading = FIND('loading').show();
 			AJAX('POST {0}/api/comments/'.format(managerurl), comments.form, function(response) {
-
-				if (isError(arguments))
-					return;
 
 				loading.hide();
 
@@ -155,4 +154,6 @@
 	function comments_reload() {
 		comments_refresh();
 	}
+
+	AJAX('GET {0}/api/comments/stats/'.format(managerurl), 'comments.stats');
 </script>

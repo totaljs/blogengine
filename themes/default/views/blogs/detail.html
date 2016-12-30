@@ -13,9 +13,22 @@
 	@{!model.body}
 </div>
 
+@{if model.others.count}
+	<div class="others hidden-xs">
+		<h2><i class="fa fa-book"></i>@(More @{model.category})</h2>
+		<div>
+		@{foreach m in model.others.items}
+			<a href="@{sitemap_url('detail', m.category_linker, m.linker)}"><i class="fa fa-caret-right"></i>@{m.name}<span class="time">@{m.datecreated}</span></a>
+		@{end}
+		</div>
+		<a href="https://my.totaljs.com" class="membership" target="_blank">@(Join us <b>for free</b>)</a>
+	</div>
+@{fi}
+
 @{if model.comments}
+	<script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
 	<!-- THE COMMENTS WILL BE LOADED WHEN THE BROWSER SCROLL ON THIS POSITION -->
-	<div data-component="lazyload" data-init="init_comments" id="comments"></div>
+	<div data-jc="lazyload" data-init="init_comments" id="comments"></div>
 	@{section script}
 	<script>
 		// Method is executed only onetime

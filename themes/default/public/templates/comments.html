@@ -1,7 +1,7 @@
 <hr />
 <div class="caption"><i class="fa fa-comments-o"></i>@(Join the discussion)</div>
-<div data-component="visible" data-component-path="comments.items" data-if="value && value.length">
-	<div data-component="repeater" data-component-path="comments.items" class="comments">
+<div data-jc="visible" data-jc-path="comments.items" data-if="value && value.length">
+	<div data-jc="repeater" data-jc-path="comments.items" class="comments">
 		<script type="text/html">
 			<div>
 				<div class="comment{{ if admin }} comment-admin{{ fi }}">
@@ -17,25 +17,25 @@
 	<br />
 </div>
 
-<div data-component="visible" data-component-path="comment.response" data-if="value && value.success" class="hidden">
+<div data-jc="visible" data-jc-path="comment.response" data-if="value && value.success" class="hidden">
 	<div class="message-success"><i class="fa fa-check-circle mr5"></i>@(Thank you, your comment has been added and it waits for confirmation.)</div>
 </div>
 
-<div data-component="visible" data-component-path="comment.response" data-if="!value || !value.success" class="hidden">
+<div data-jc="visible" data-jc-path="comment.response" data-if="!value || !value.success" class="hidden">
 	<div class="row">
 		<div class="col-md-4 m">
-			<div data-component="textbox" data-component-path="comment.user" data-required="true" data-maxlenght="30" data-component-value="''">@(Your name)</div>
+			<div data-jc="textbox" data-jc-path="comment.user" data-required="true" data-maxlenght="30" data-jc-value="''">@(Your name)</div>
 		</div>
 		<div class="col-md-4 m">
-			<div data-component="textbox" data-component-path="comment.email" data-required="true" data-maxlenght="120" data-component-type="email" data-component-value="'@'">@(Email address)</div>
+			<div data-jc="textbox" data-jc-path="comment.email" data-required="true" data-maxlenght="120" data-jc-type="email" data-jc-value="'@'">@(Email address)</div>
 		</div>
 	</div>
-	<div data-component="textarea" data-component-path="comment.body" data-required="true" data-component-value="''" data-height="150px">@(Message)</div>
+	<div data-jc="textarea" data-jc-path="comment.body" data-required="true" data-jc-value="''" data-height="150px">@(Message)</div>
 	<br />
-	<div data-component="validation" data-component-path="comment">
+	<div data-jc="validation" data-jc-path="comment">
 		<div class="row">
 			<div class="col-md-4 m">
-				<button class="button" disabled="disabled" data-component="click" data-component-path="#submit">@(SUBMIT)</button>
+				<button class="button" disabled="disabled" data-jc="click" data-jc-path="#submit">@(SUBMIT)</button>
 			</div>
 		</div>
 	</div>

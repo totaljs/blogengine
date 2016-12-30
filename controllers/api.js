@@ -33,7 +33,6 @@ function json_ping() {
 
 function json_blogs_query() {
 	var self = this;
-	self.query.max = 10;
 	self.query.draft = false;
 	self.$query(self, self.callback());
 }

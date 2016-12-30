@@ -8,7 +8,7 @@ COMPONENT('click', function() {
 		if (typeof(value) === 'string')
 			self.set(self.parser(value));
 		else
-			self.get(self.attr('data-component-path'))(self);
+			self.get(self.attr('data-jc-path'))(self);
 	};
 
 	self.make = function() {
@@ -18,6 +18,19 @@ COMPONENT('click', function() {
 			e.keyCode === 13 && setTimeout(function() {
 				!self.element.get(0).disabled && self.click();
 			}, 100);
+		});
+	};
+});
+
+COMPONENT('exec', function() {
+	var self = this;
+	self.readonly();
+	self.blind();
+	self.make = function() {
+		self.element.on('click', self.attr('data-selector') || '.exec', function() {
+			var el = $(this);
+			var attr = el.attr('data-exec');
+			attr && EXEC(attr, el);
 		});
 	};
 });
@@ -232,7 +245,7 @@ COMPONENT('dropdown', function() {
 		self.element.addClass('ui-dropdown-container');
 
 		var label = self.html();
-		var html = '<div class="ui-dropdown"><span class="fa fa-sort"></span><select data-component-bind="">{0}</select></div>'.format(options.join(''));
+		var html = '<div class="ui-dropdown"><span class="fa fa-sort"></span><select data-jc-bind="">{0}</select></div>'.format(options.join(''));
 		var builder = [];
 
 		if (label.length) {
@@ -322,9 +335,9 @@ COMPONENT('textbox', function() {
 		attrs.attr('type', self.type === 'password' ? self.type : 'text');
 		attrs.attr('placeholder', self.attr('data-placeholder'));
 		attrs.attr('maxlength', self.attr('data-maxlength'));
-		attrs.attr('data-component-keypress', self.attr('data-component-keypress'));
-		attrs.attr('data-component-keypress-delay', self.attr('data-component-keypress-delay'));
-		attrs.attr('data-component-bind', '');
+		attrs.attr('data-jc-keypress', self.attr('data-jc-keypress'));
+		attrs.attr('data-jc-keypress-delay', self.attr('data-jc-keypress-delay'));
+		attrs.attr('data-jc-bind', '');
 
 		tmp = self.attr('data-align');
 		tmp && attrs.attr('class', 'ui-' + tmp);
@@ -339,6 +352,20 @@ COMPONENT('textbox', function() {
 
 		if (!icon2 && self.type === 'date')
 			icon2 = 'fa-calendar';
+		else if (self.type === 'search') {
+			icon2 = 'fa-search ui-textbox-control-icon';
+			self.element.on('click', '.ui-textbox-control-icon', function() {
+				self.$stateremoved = false;
+				$(this).removeClass('fa-times').addClass('fa-search');
+				self.set('');
+			});
+			self.getter2 = function(value) {
+				if (self.$stateremoved && !value)
+					return;
+				self.$stateremoved = value ? false : true;
+				self.find('.ui-textbox-control-icon').toggleClass('fa-times', value ? true : false).toggleClass('fa-search', value ? false : true);
+			};
+		}
 
 		icon2 && builder.push('<div><span class="fa {0}"></span></div>'.format(icon2));
 		increment && !icon2 && builder.push('<div><span class="fa fa-caret-up"></span><span class="fa fa-caret-down"></span></div>');
@@ -401,7 +428,7 @@ COMPONENT('textarea', function() {
 
 		var is = false;
 		var type = typeof(value);
-		if (input.prop('disabled') || isRequired)
+		if (input.prop('disabled') || !isRequired)
 			return true;
 
 		if (type === 'undefined' || type === 'object')
@@ -454,7 +481,7 @@ COMPONENT('textarea', function() {
 
 		builder = [];
 		builder.push('<div class="ui-textarea-label{0}">'.format(isRequired ? ' ui-textarea-label-required' : ''));
-		icon && builder.push('<span class="fa {0}"></span> '.format(icon));
+		icon && builder.push('<span class="fa {0}"></span>'.format(icon));
 		builder.push(content);
 		builder.push(':</div><div class="ui-textarea">{0}</div>'.format(html));
 
@@ -525,7 +552,7 @@ COMPONENT('repeater', function() {
 		var html = element.html();
 		element.remove();
 		self.template = Tangular.compile(html);
-		recompile = html.indexOf('data-component="') !== -1;
+		recompile = html.indexOf('data-jc="') !== -1;
 	};
 
 	self.setter = function(value) {
@@ -577,19 +604,49 @@ COMPONENT('error', function() {
 
 COMPONENT('cookie', function() {
 	var self = this;
-	self.readonly();
 	self.singleton();
+	self.readonly();
+
+	self.cancel = function() {
+		document.cookie.split(';').forEach(function(key) {
+			jC.cookies.set(key.split('=')[0], '', '-2 days');
+		});
+		try {
+			Object.keys(localStorage).forEach(function(key) {
+				localStorage.removeItem(key);
+			});
+		} catch (e) {}
+		location.href = 'about:blank';
+		return self;
+	};
+
 	self.make = function() {
-		var cookie = localStorage.getItem('cookie');
+
+		var cookie;
+
+		// private mode
+		try {
+			cookie = localStorage.getItem('cookie');
+		} catch (e) {}
+
 		if (cookie) {
 			self.element.addClass('hidden');
 			return;
 		}
 
 		self.element.removeClass('hidden').addClass('ui-cookie');
-		self.element.append('<button>' + (self.attr('data-button') || 'OK') + '</button>');
+		self.element.append('<button name="agree">' + (self.attr('data-agree') || 'OK') + '</button>');
+		self.element.append('<button name="cancel">' + (self.attr('data-cancel') || 'Cancel') + '</button>');
+
 		self.element.on('click', 'button', function() {
-			localStorage.setItem('cookie', '1');
+
+			if (this.name === 'cancel')
+				return self.cancel();
+
+			// private mode
+			try {
+				localStorage.setItem('cookie', '1');
+			} catch (e) {}
 			self.element.addClass('hidden');
 		});
 	};
@@ -800,7 +857,7 @@ COMPONENT('grid', function() {
 		self.template = Tangular.compile(element.html());
 		self.element.on('click', 'tr', function() {});
 		self.element.addClass('ui-grid');
-		self.html('<div><div class="ui-grid-page"></div><table width="100%" cellpadding="0" cellspacing="0" border="0"><tbody></tbody></table></div><div data-component="pagination" data-component-path="{0}" data-max="8" data-pages="{1}" data-items="{2}" data-target-path="{3}"></div>'.format(self.path, self.attr('data-pages'), self.attr('data-items'), self.attr('data-pagination-path')));
+		self.html('<div><div class="ui-grid-page"></div><table width="100%" cellpadding="0" cellspacing="0" border="0"><tbody></tbody></table></div><div data-jc="pagination" data-jc-path="{0}" data-max="8" data-pages="{1}" data-items="{2}" data-target-path="{3}"></div>'.format(self.path, self.attr('data-pages'), self.attr('data-items'), self.attr('data-pagination-path')));
 		self.element.on('click', 'button', function() {
 			switch (this.name) {
 				default:
@@ -926,9 +983,9 @@ COMPONENT('form', function() {
 
 		$(document.body).append('<div id="{0}" class="hidden ui-form-container"><div class="ui-form-container-padding"><div class="ui-form" style="max-width:{1}"><div class="ui-form-title"><span class="fa fa-times ui-form-button-close" data-id="{2}"></span>{3}</div>{4}</div></div>'.format(self._id, width, self.id, self.attr('data-title')));
 
-		self.element.data(COM_ATTR, self);
 		var el = $('#' + self._id);
 		el.find('.ui-form').get(0).appendChild(self.element.get(0));
+		self.element.removeClass('hidden');
 		self.element = el;
 
 		self.element.on('scroll', function() {
@@ -957,16 +1014,23 @@ COMPONENT('form', function() {
 	self.getter = null;
 	self.setter = function(value) {
 
+		setTimeout2('noscroll', function() {
+			$('html').toggleClass('noscroll', $('.ui-form-container').not('.hidden').length ? true : false);
+		}, 50);
+
 		var isHidden = !EVALUATE(self.path, self.condition);
 		self.element.toggleClass('hidden', isHidden);
 		EXEC('$calendar.hide');
 
 		if (isHidden) {
+			self.release(true);
 			self.element.find('.ui-form').removeClass('ui-form-animate');
 			return;
 		}
 
 		self.resize();
+		self.release(false);
+
 		var el = self.element.find('input,select,textarea');
 		el.length > 0 && el.eq(0).focus();
 		window.$$form_level++;
@@ -1305,6 +1369,112 @@ COMPONENT('dropdowncheckbox', function() {
 		window.$dropdowncheckboxelement.addClass('hidden');
 		window.$dropdowncheckboxelement = null;
 	});
+});
+
+COMPONENT('textboxlist', function() {
+	var self = this;
+	var container;
+	var empty = {};
+	var skip = false;
+
+	self.template = Tangular.compile('<div class="ui-textboxlist-item"><div><i class="fa fa-times"></i></div><div><input type="text" maxlength="{{ max }}" placeholder="{{ placeholder }}" value="{{ value }}" /></div></div>');
+	self.make = function() {
+
+		empty.max = (self.attr('data-maxlength') || '100').parseInt();
+		empty.placeholder = self.attr('data-placeholder');
+		empty.value = '';
+
+		var html = self.html();
+		var icon = self.attr('data-icon');
+
+		if (icon)
+			icon = '<i class="fa {0}"></i>'.format(icon);
+
+		self.toggle('ui-textboxlist');
+		self.html((html ? '<div class="ui-textboxlist-label">{1}{0}:</div>'.format(html, icon) : '') + '<div class="ui-textboxlist-items"></div>' + self.template(empty).replace('-item"', '-item ui-textboxlist-base"'));
+		container = self.find('.ui-textboxlist-items');
+
+		self.element.on('click', '.fa-times', function() {
+			var el = $(this);
+			var parent = el.closest('.ui-textboxlist-item');
+			var value = parent.find('input').val();
+			var arr = self.getArray();
+
+			parent.remove();
+
+			var index = arr.indexOf(value);
+			if (index === -1)
+				return;
+			arr.splice(index, 1);
+			skip = true;
+			self.set(self.path, arr, 2);
+			self.change(true);
+		});
+
+		self.getArray = function() {
+			var arr = self.get();
+			if (!arr)  {
+				arr = [];
+				self.set(arr);
+			}
+			return arr;
+		};
+
+		self.element.on('change keypress', 'input', function(e) {
+
+			if (e.type !== 'change' && e.keyCode !== 13)
+				return;
+
+			var el = $(this);
+
+			var value = this.value.trim();
+			if (!value)
+				return;
+
+			var arr = [];
+			var base = el.closest('.ui-textboxlist-base').length > 0;
+
+			if (base && e.type === 'change')
+				return;
+
+			if (base) {
+				self.getArray().indexOf(value) === -1 && self.push(self.path, value, 2);
+				this.value = '';
+				self.change(true);
+				return;
+			}
+
+			container.find('input').each(function() {
+				arr.push(this.value.trim());
+			});
+
+			skip = true;
+			self.set(self.path, arr, 2);
+			self.change(true);
+		});
+	};
+
+	self.setter = function(value, path, type) {
+
+		if (skip) {
+			skip = false;
+			return;
+		}
+
+		if (!value || !value.length) {
+			container.empty();
+			return;
+		}
+
+		var builder = [];
+
+		value.forEach(function(item) {
+			empty.value = item;
+			builder.push(self.template(empty));
+		});
+
+		container.empty().append(builder.join(''));
+	};
 });
 
 COMPONENT('codemirror', function() {
@@ -1913,6 +2083,181 @@ COMPONENT('pagination', function() {
 			self.element.toggleClass('hidden', true);
 	};
 });
+
+COMPONENT('nosqlcounter', function() {
+	var self = this;
+	var chart;
+	var count = (self.attr('data-count') || '12').parseInt();
+
+	self.readonly();
+	self.make = function() {
+		self.toggle('ui-nosqlcounter', true);
+	};
+
+	self.setter = function(value) {
+
+		if (!value || !value.length)
+			return self.empty();
+
+		var maxbars = count;
+
+		if (WIDTH() === 'xs')
+			maxbars = (maxbars / 2) >> 0;
+
+		var max = value.length - maxbars;
+		if (max < 0)
+			max = 0;
+
+		value = value.slice(max, value.length);
+		max = value.scalar('max', 'value');
+
+		var w = self.element.width();
+
+		var bar = 100 / maxbars;
+		var builder = [];
+		var months = FIND('calendar').months;
+		var current = new Date().format('yyyyMM');
+		var cls = '';
+
+		value.forEach(function(item, index) {
+			var val = item.value;
+			if (val > 999)
+				val = (val / 1000).format(0, 2) + 'K';
+			var h = (item.value / max) * 60;
+			h += 40;
+
+			cls = '';
+
+			if (item.id === current)
+				cls += (cls ? ' ' : '') + 'current';
+
+			if (index === 11)
+				cls += (cls ? ' ' : '') + 'last';
+
+			builder.push('<div style="width:{0}%;height:{1}%" title="{3}" class="{4}"><span>{2}</span></div>'.format(bar.format(0, 3), h.format(0, 3), val, months[item.month - 1] + ' ' + item.year, cls));
+		});
+
+		self.html(builder);
+	};
+});
+
+COMPONENT('binder', function() {
+
+	var self = this;
+	var keys;
+	var keys_unique;
+
+	self.readonly();
+	self.blind();
+
+	self.make = function() {
+		self.watch('*', self.autobind);
+		self.scan();
+
+		self.on('component', function() {
+			setTimeout2(self.id, self.scan, 200);
+		});
+
+		self.on('destroy', function() {
+			setTimeout2(self.id, self.scan, 200);
+		});
+	};
+
+	self.autobind = function(path, value) {
+		var mapper = keys[path];
+		var template = {};
+		mapper && mapper.forEach(function(item) {
+			var value = self.get(item.path);
+			template.value = value;
+			item.classes && classes(item.element, item.classes(value));
+			item.visible && item.element.toggleClass('hidden', item.visible(value) ? false : true);
+			item.html && item.element.html(item.html(value));
+			item.template && item.element.html(item.template(template));
+		});
+	};
+
+	function classes(element, val) {
+		var add = '';
+		var rem = '';
+		val.split(' ').forEach(function(item) {
+			switch (item.substring(0, 1)) {
+				case '+':
+					add += (add ? ' ' : '') + item.substring(1);
+					break;
+				case '-':
+					rem += (rem ? ' ' : '') + item.substring(1);
+					break;
+				default:
+					add += (add ? ' ' : '') + item;
+					break;
+			}
+		});
+		rem && element.removeClass(rem);
+		add && element.addClass(add);
+	}
+
+	function decode(val) {
+		return val.replace(/\&\#39;/g, '\'');
+	}
+
+	self.scan = function() {
+		keys = {};
+		keys_unique = {};
+		self.find('[data-binder]').each(function() {
+
+			var el = $(this);
+			var path = el.attr('data-binder');
+			var arr = path.split('.');
+			var p = '';
+
+			var classes = el.attr('data-binder-class');
+			var html = el.attr('data-binder-html');
+			var visible = el.attr('data-binder-visible');
+			var obj = el.data('data-binder');
+
+			keys_unique[path] = true;
+
+			if (!obj) {
+				obj = {};
+				obj.path = path;
+				obj.element = el;
+				obj.classes = classes ? FN(decode(classes)) : undefined;
+				obj.html = html ? FN(decode(html)) : undefined;
+				obj.visible = visible ? FN(decode(visible)) : undefined;
+
+				var tmp = el.find('script[type="text/html"]');
+				var str = '';
+				if (tmp.length)
+					str = tmp.html();
+				else
+					str = el.html();
+
+				if (str.indexOf('{{') !== -1) {
+					obj.template = Tangular.compile(str);
+					tmp.length && tmp.remove();
+				}
+
+				el.data('data-binder', obj);
+			}
+
+			for (var i = 0, length = arr.length; i < length; i++) {
+				p += (p ? '.' : '') + arr[i];
+				if (keys[p])
+					keys[p].push(obj);
+				else
+					keys[p] = [obj];
+			}
+
+		});
+
+		Object.keys(keys_unique).forEach(function(key) {
+			self.autobind(key, self.get(key));
+		});
+
+		return self;
+	};
+
+});
 // ==========================================================
 // @{end}
 // ==========================================================
@@ -1941,10 +2286,10 @@ jC.formatter(function(path, value, type) {
 
 	if (type === 'date') {
 		if (value instanceof Date)
-			return value.format(this.attr('data-component-format'));
+			return value.format(this.attr('data-jc-format'));
 		if (!value)
 			return value;
-		return new Date(Date.parse(value)).format(this.attr('data-component-format'));
+		return new Date(Date.parse(value)).format(this.attr('data-jc-format'));
 	}
 
 	if (type !== 'currency')
