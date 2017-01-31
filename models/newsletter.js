@@ -1,5 +1,4 @@
-const Fs = require('fs');
-const filename = F.path.databases('newsletter.csv');
+const HEADERS = { 'Content-Disposition': 'attachment; filename="newsletter.csv"' };
 
 NEWSCHEMA('Newsletter').make(function(schema) {
 
@@ -9,8 +8,11 @@ NEWSCHEMA('Newsletter').make(function(schema) {
 	schema.setSave(function(error, model, options, callback, controller) {
 
 		model.datecreated = F.datetime;
-		model.ip = controller.ip;
-		model.language = controller.language;
+
+		if (controller) {
+			model.ip = controller.ip;
+			model.language = controller.language;
+		}
 
 		var db = NOSQL('newsletter');
 
@@ -25,7 +27,6 @@ NEWSCHEMA('Newsletter').make(function(schema) {
 		callback(SUCCESS(true));
 	});
 
-	// Gets listing
 	schema.setQuery(function(error, options, callback) {
 
 		options.page = U.parseInt(options.page) - 1;
@@ -64,7 +65,7 @@ NEWSCHEMA('Newsletter').make(function(schema) {
 			for (var i = 0, length = response.length; i < length; i++)
 				builder.push('"' + response[i].email + '"');
 
-			controller.content(builder.join('\n'), U.getContentType('csv'), { 'Content-Disposition': 'attachment; filename="newsletter.csv"' });
+			controller.content(builder.join('\n'), U.getContentType('csv'), HEADERS);
 			callback();
 		});
 	});

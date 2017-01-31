@@ -28,5 +28,5 @@
 <br />
 <div style="border:2px solid #F0F0F0;padding:20px;border-radius:4px">
 	<div style="margin-bottom:10px"><b>@(Message:)</b></div>
-	<div>@{!model.message.encode().replace(/\n/g, '<br />')}</div>
+	<div>@{!model.body.encode().replace(/\n/g, '<br />')}</div>
 </div>

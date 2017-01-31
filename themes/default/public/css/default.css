@@ -91,6 +91,7 @@ p { margin: 0; }
 .linkbutton-small { padding: 10px 0; font-size: 16px; }
 
 .message-success { background-color: #8CC152; color: white; padding: 18px 20px; text-align: center; font-size: 16px; border-radius: 4px; }
+.message-success .fa { margin-right: 10px; }
 .bg-smoke { background-color: #F8F8F8; }
 
 .button { padding: 15px 0; width: 100%; font-size: 14px; }

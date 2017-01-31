@@ -30,7 +30,9 @@ COMPONENT('exec', function() {
 		self.element.on('click', self.attr('data-selector') || '.exec', function() {
 			var el = $(this);
 			var attr = el.attr('data-exec');
+			var path = el.attr('data-path');
 			attr && EXEC(attr, el);
+			path && SET(path, new Function('return ' + el.attr('data-value'))());
 		});
 	};
 });
@@ -302,7 +304,7 @@ COMPONENT('textbox', function() {
 		else
 			value = value.toString();
 
-		EXEC('$calendar.hide');
+		WORKFLOW('reflow')(self.name);
 
 		switch (self.type) {
 			case 'email':
@@ -338,6 +340,7 @@ COMPONENT('textbox', function() {
 		attrs.attr('data-jc-keypress', self.attr('data-jc-keypress'));
 		attrs.attr('data-jc-keypress-delay', self.attr('data-jc-keypress-delay'));
 		attrs.attr('data-jc-bind', '');
+		attrs.attr('name', self.path);
 
 		tmp = self.attr('data-align');
 		tmp && attrs.attr('class', 'ui-' + tmp);
@@ -413,7 +416,7 @@ COMPONENT('textbox', function() {
 		if (invalid === self.$oldstate)
 			return;
 		self.$oldstate = invalid;
-		container.toggleClass('ui-textbox-invalid', self.isInvalid());
+		container.toggleClass('ui-textbox-invalid', invalid);
 	};
 });
 
@@ -426,7 +429,6 @@ COMPONENT('textarea', function() {
 
 	self.validate = function(value) {
 
-		var is = false;
 		var type = typeof(value);
 		if (input.prop('disabled') || !isRequired)
 			return true;
@@ -436,7 +438,7 @@ COMPONENT('textarea', function() {
 		else
 			value = value.toString();
 
-		EXEC('$calendar.hide');
+		WORKFLOW('reflow')(self.name);
 		return value.length > 0;
 	};
 
@@ -457,7 +459,7 @@ COMPONENT('textarea', function() {
 
 		attrs.attr('placeholder', self.attr('data-placeholder'));
 		attrs.attr('maxlength', self.attr('data-maxlength'));
-		attrs.attr('data-component-bind', '');
+		attrs.attr('data-jc-bind', '');
 
 		tmp = self.attr('data-height');
 		tmp && attrs.attr('style', 'height:' + tmp);
@@ -498,7 +500,7 @@ COMPONENT('textarea', function() {
 		if (invalid === self.$oldstate)
 			return;
 		self.$oldstate = invalid;
-		container.toggleClass('ui-textarea-invalid', self.isInvalid());
+		container.toggleClass('ui-textarea-invalid', invalid);
 	};
 });
 
@@ -928,7 +930,7 @@ COMPONENT('form', function() {
 		window.$$form_level = window.$$form_level || 1;
 		MAN.$$form = true;
 		$(document).on('click', '.ui-form-button-close', function() {
-			SET($.components.findById($(this).attr('data-id')).path, '');
+			SET($(this).attr('data-path'), '');
 			window.$$form_level--;
 		});
 
@@ -981,15 +983,15 @@ COMPONENT('form', function() {
 		autocenter = self.attr('data-autocenter') === 'true';
 		self.condition = self.attr('data-if');
 
-		$(document.body).append('<div id="{0}" class="hidden ui-form-container"><div class="ui-form-container-padding"><div class="ui-form" style="max-width:{1}"><div class="ui-form-title"><span class="fa fa-times ui-form-button-close" data-id="{2}"></span>{3}</div>{4}</div></div>'.format(self._id, width, self.id, self.attr('data-title')));
+		$(document.body).append('<div id="{0}" class="hidden ui-form-container"><div class="ui-form-container-padding"><div class="ui-form" style="max-width:{1}"><div class="ui-form-title"><span class="fa fa-times ui-form-button-close" data-path="{2}"></span>{3}</div>{4}</div></div>'.format(self._id, width, self.path, self.attr('data-title')));
 
 		var el = $('#' + self._id);
 		el.find('.ui-form').get(0).appendChild(self.element.get(0));
-		self.element.removeClass('hidden');
+		self.classes('-hidden');
 		self.element = el;
 
 		self.element.on('scroll', function() {
-			EXEC('$calendar.hide');
+			WORKFLOW('reflow')(self.name);
 		});
 
 		self.element.find('button').on('click', function(e) {
@@ -1005,13 +1007,10 @@ COMPONENT('form', function() {
 		});
 
 		enter === 'true' && self.element.on('keydown', 'input', function(e) {
-			e.keyCode === 13 && self.element.find('button[name="submit"]').get(0).disabled && self.submit(hide);
+			e.keyCode === 13 && !self.element.find('button[name="submit"]').get(0).disabled && self.submit(hide);
 		});
-
-		return true;
 	};
 
-	self.getter = null;
 	self.setter = function(value) {
 
 		setTimeout2('noscroll', function() {
@@ -1020,7 +1019,7 @@ COMPONENT('form', function() {
 
 		var isHidden = !EVALUATE(self.path, self.condition);
 		self.element.toggleClass('hidden', isHidden);
-		EXEC('$calendar.hide');
+		WORKFLOW('reflow')(self.name);
 
 		if (isHidden) {
 			self.release(true);
@@ -1032,14 +1031,20 @@ COMPONENT('form', function() {
 		self.release(false);
 
 		var el = self.element.find('input,select,textarea');
-		el.length > 0 && el.eq(0).focus();
+		el.length && el.eq(0).focus();
+
 		window.$$form_level++;
 		self.element.css('z-index', window.$$form_level * 10);
-		self.element.animate({ scrollTop: 0 }, 0, function() {
-			setTimeout(function() {
-				self.element.find('.ui-form').addClass('ui-form-animate');
-			}, 300);
-		});
+		self.element.scrollTop(0);
+
+		setTimeout(function() {
+			self.element.find('.ui-form').addClass('ui-form-animate');
+		}, 300);
+
+		// Fixes a problem with freezing of scrolling in Chrome
+		setTimeout2(self.id, function() {
+			self.element.css('z-index', (window.$$form_level * 10) + 1);
+		}, 1000);
 	};
 });
 
@@ -1575,6 +1580,7 @@ COMPONENT('calendar', function() {
 	var self = this;
 	var skip = false;
 	var skipDay = false;
+	var visible = false;
 	var callback;
 
 	self.days = self.attr('data-days').split(',');
@@ -1639,12 +1645,10 @@ COMPONENT('calendar', function() {
 
 		for (var i = 0; i < days + from; i++) {
 
-			count++;
-			var obj = { isToday: false, isSelected: false, isEmpty: false, isFuture: false, number: 0, index: count };
+			var obj = { isToday: false, isSelected: false, isEmpty: false, isFuture: false, number: 0, index: ++count };
 
 			if (i >= from) {
-				index++;
-				obj.number = index;
+				obj.number = ++index;
 				obj.isSelected = sy === year && sm === month && sd === index;
 				obj.isToday = ty === year && tm === month && td === index;
 				obj.isFuture = ty < year;
@@ -1666,20 +1670,14 @@ COMPONENT('calendar', function() {
 		}
 
 		indexEmpty = 0;
-		for (var i = count; i < 42; i++) {
-			count++;
-			indexEmpty++;
-			var obj = { isToday: false, isSelected: false, isEmpty: true, isFuture: false, number: indexEmpty, index: count };
-			output.days.push(obj);
-		}
-
+		for (var i = count; i < 42; i++)
+			output.days.push({ isToday: false, isSelected: false, isEmpty: true, isFuture: false, number: ++indexEmpty, index: ++count });
 		return output;
 	}
 
 	self.hide = function() {
-		if (self.element.hasClass('hidden'))
-			return;
-		self.element.addClass('hidden');
+		self.element.toggleClass('hidden', true);
+		visible = false;
 		return self;
 	};
 
@@ -1702,6 +1700,7 @@ COMPONENT('calendar', function() {
 		self.element.css({ left: off.left + (offset || 0), top: off.top + h + 12 }).removeClass('hidden');
 		self.click = callback;
 		self.date(value);
+		visible = true;
 		return self;
 	};
 
@@ -1712,19 +1711,17 @@ COMPONENT('calendar', function() {
 		self.element.on('click', '.ui-calendar-today', function() {
 			var dt = new Date();
 			self.hide();
-			if (self.click)
-				self.click(dt);
+			self.click && self.click(dt);
 		});
 
 		self.element.on('click', '.ui-calendar-day', function() {
 			var arr = this.getAttribute('data-date').split('-');
 			var dt = new Date(parseInt(arr[0]), parseInt(arr[1]), parseInt(arr[2]));
-			skip = true;
 			self.element.find('.ui-calendar-selected').removeClass('ui-calendar-selected');
 			$(this).addClass('ui-calendar-selected');
+			skip = true;
 			self.hide();
-			if (self.click)
-				self.click(dt);
+			self.click && self.click(dt);
 		});
 
 		self.element.on('click', 'button', function(e) {
@@ -1747,11 +1744,14 @@ COMPONENT('calendar', function() {
 		});
 
 		$(document.body).on('scroll', function() {
-			if (window.$calendar)
-				window.$calendar.hide();
+			visible && EXEC('$calendar.hide');
 		});
 
 		window.$calendar = self;
+
+		WORKFLOW('reflow', function() {
+			visible && EXEC('$calendar.hide');
+		});
 	};
 
 	self.date = function(value) {
@@ -1784,8 +1784,7 @@ COMPONENT('calendar', function() {
 			var item = output.days[i];
 
 			if (i % 7 === 0) {
-				if (builder.length > 0)
-					builder.push('</tr>');
+				builder.length && builder.push('</tr>');
 				builder.push('<tr>');
 			}
 
@@ -1796,22 +1795,18 @@ COMPONENT('calendar', function() {
 			else
 				cls.push('ui-calendar-day');
 
-			if (!empty && item.isSelected)
-				cls.push('ui-calendar-selected');
-
-			if (item.isToday)
-				cls.push('ui-calendar-day-today');
-
-			builder.push('<td class="' + cls.join(' ') + '" data-date="' + output.year + '-' + output.month + '-' + item.number + '">' + item.number + '</td>');
+			!empty && item.isSelected && cls.push('ui-calendar-selected');
+			item.isToday && cls.push('ui-calendar-day-today');
+			builder.push('<td class="{0}" data-date="{1}-{2}-{3}">{3}</td>'.format(cls.join(' '), output.year, output.month, item.number));
 		}
 
 		builder.push('</tr>');
 
 		var header = [];
 		for (var i = 0; i < 7; i++)
-			header.push('<th>' + output.header[i].name + '</th>');
+			header.push('<th>{0}</th>'.format(output.header[i].name));
 
-		self.element.html('<div class="ui-calendar-header"><button class="ui-calendar-header-prev" name="prev" data-date="' + output.year + '-' + output.month + '"><span class="fa fa-chevron-left"></span></button><div class="ui-calendar-header-info">' + self.months[value.getMonth()] + ' ' + value.getFullYear() + '</div><button class="ui-calendar-header-next" name="next" data-date="' + output.year + '-' + output.month + '"><span class="fa fa-chevron-right"></span></button></div><table cellpadding="0" cellspacing="0" border="0"><thead>' + header.join('') + '</thead><tbody>' + builder.join('') + '</tbody></table>' + (self.today ? '<div><a href="javascript:void(0)" class="ui-calendar-today">' + self.today + '</a></div>' : ''));
+		self.element.html('<div class="ui-calendar-header"><button class="ui-calendar-header-prev" name="prev" data-date="{0}-{1}"><span class="fa fa-chevron-left"></span></button><div class="ui-calendar-header-info">{2} {3}</div><button class="ui-calendar-header-next" name="next" data-date="{0}-{1}"><span class="fa fa-chevron-right"></span></button></div><table cellpadding="0" cellspacing="0" border="0"><thead>{4}</thead><tbody>{5}</tbody></table>'.format(output.year, output.month, self.months[value.getMonth()], value.getFullYear(), header.join(''), builder.join('')) + (self.today ? '<div><a href="javascript:void(0)" class="ui-calendar-today">' + self.today + '</a></div>' : ''));
 	};
 });
 
@@ -1832,16 +1827,21 @@ COMPONENT('tabmenu', function() {
 	};
 });
 
-/**
- * Disable
- * @version 1.0.0
- */
 COMPONENT('disable', function() {
 	var self = this;
-	var condition = self.attr('data-if');
-	var selector = self.attr('data-selector') || 'input,texarea,select';
+	var condition;
+	var selector;
+	var validate;
 
 	self.readonly();
+
+	self.make = function() {
+		condition = self.attr('data-if');
+		selector = self.attr('data-selector') || 'input,texarea,select';
+		validate = self.attr('data-validate');
+		if (validate)
+			validate = validate.split(',').trim();
+	};
 
 	self.setter = function(value) {
 		var is = true;
@@ -1856,11 +1856,12 @@ COMPONENT('disable', function() {
 			var tag = el.get(0).tagName;
 			if (tag === 'INPUT' || tag === 'SELECT') {
 				el.prop('disabled', is);
-				el.parent().parent().toggleClass('ui-disabled', is);
-				return;
-			}
-			el.toggleClass('ui-disabled', is);
+				el.parent().toggleClass('ui-disabled', is);
+			} else
+				el.toggleClass('ui-disabled', is);
 		});
+
+		validate && validate.forEach(FN('n => jC.reset(n)'));
 	};
 
 	self.state = function(type) {
@@ -1951,10 +1952,6 @@ COMPONENT('loading', function() {
 	};
 });
 
-/**
- * Pagination
- * @version 1.0.0
- */
 COMPONENT('pagination', function() {
 
 	var self = this;
@@ -2122,7 +2119,7 @@ COMPONENT('nosqlcounter', function() {
 		value.forEach(function(item, index) {
 			var val = item.value;
 			if (val > 999)
-				val = (val / 1000).format(0, 2) + 'K';
+				val = (val / 1000).format(1, 2) + 'K';
 			var h = (item.value / max) * 60;
 			h += 40;
 
@@ -2258,6 +2255,7 @@ COMPONENT('binder', function() {
 	};
 
 });
+
 // ==========================================================
 // @{end}
 // ==========================================================

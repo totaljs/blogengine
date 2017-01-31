@@ -30,7 +30,7 @@ function file_read(req, res) {
 	var id = req.split[1].replace('.' + req.extension, '');
 
 	F.exists(req, res, function(next, filename) {
-		DB('files').binary.read(id, function(err, stream, header) {
+		NOSQL('files').binary.read(id, function(err, stream, header) {
 
 			if (err) {
 				next();

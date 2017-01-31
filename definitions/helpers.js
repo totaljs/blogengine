@@ -1,10 +1,5 @@
-const SMILES = { ':-)': 1, ':)': 1, ';)': 8, ':D': 0, '8)': 5, ':((': 7, ':(': 3, ':|': 2, ':P': 6, ':O': 4, ':*': 9, '+1': 10, '1': 11, '\/': 12 };
-const SMILES_REGEXP = /(\-1|[:;8O\-)DP(|\*]|\+1){1,3}/g;
-
-// Helper for pagination rendering
-// Eshop uses this helper
 F.helpers.pagination = function(model) {
-	return new Pagination(model.count, model.page, model.limit).html(8);
+	return new Pagination(model.count, model.page, model.limit, this.href('page', 'XyX').replace('XyX', '{0}')).html(8);
 };
 
 global.marked = require('marked');

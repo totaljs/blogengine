@@ -99,7 +99,6 @@ COMPONENT('lazyload', function() {
 	var self = this;
 
 	self.visible_old = 0;
-	self.visible_timeout = 0;
 	self.isinit = false;
 	self.isredraw = false;
 
@@ -109,7 +108,6 @@ COMPONENT('lazyload', function() {
 
 		window.$lazyload = [];
 		window.$lazyload_can = false;
-		window.$lazyload_timeout = 0;
 
 		var win = $(window);
 		win.on('scroll', function(e) {
@@ -124,13 +122,12 @@ COMPONENT('lazyload', function() {
 			for (var i = 0, length = arr.length; i < length; i++) {
 				var item = arr[i];
 				item.component.visible = toph >= item.top && top <= item.top + item.height;
-				item.component.refresh(item.remove);
+				!item.remove && item.component.refresh(item);
 			}
 		});
 
 		window.$lazyload_refresh = function(skip) {
-			clearTimeout(window.$lazyload_timeout);
-			window.$lazyload_timeout = setTimeout(function() {
+			setTimeout2('$lazyload', function() {
 				var arr = window.$lazyload;
 				for (var i = 0, length = arr.length; i < length; i++) {
 					var item = arr[i];
@@ -167,14 +164,14 @@ COMPONENT('lazyload', function() {
 		window.$lazyload_can = window.$lazyload.length > 0;
 	};
 
-	self.refresh = function(remove) {
+	self.refresh = function(item) {
 
 		if (self.visible_old === self.visible)
 			return;
 
 		clearTimeout(self.visible_timeout);
 		self.visible_old = self.visible;
-		self.visible_timeout = setTimeout(function() {
+		setTimeout2(self.id, function() {
 
 			var attr;
 
@@ -185,6 +182,7 @@ COMPONENT('lazyload', function() {
 				} else {
 					self.isinit = true;
 					attr = 'init';
+					item.remove = item.$remove;
 					setTimeout(function() {
 						$lazyload_refresh(self.id);
 					}, 200);
@@ -194,7 +192,6 @@ COMPONENT('lazyload', function() {
 
 			if (!attr)
 				return;
-
 
 			var path = self.attr('data-' + attr);
 			if (!path)
@@ -206,7 +203,7 @@ COMPONENT('lazyload', function() {
 			else
 				self.set(attr === 'hide' ? !self.visible : self.visible);
 
-			if (!self.isinit || !remove)
+			if (!self.isinit || !item.remove)
 				return;
 
 			self.clean();
@@ -221,7 +218,8 @@ COMPONENT('lazyload', function() {
 		item.top = self.element.offset().top;
 		item.type = 0;
 		item.height = (self.attr('data-height') || '').replace(/px|\%/g, '').parseInt();
-		item.remove = self.attr('data-redraw') || self.attr('data-hide') ? false : true;
+		item.$remove = self.attr('data-redraw') || self.attr('data-hide') ? false : true;
+		item.remove = false;
 
 		if (!item.height) {
 			item.innerh = true;
@@ -230,20 +228,20 @@ COMPONENT('lazyload', function() {
 
 		$lazyload.push(item);
 		$lazyload_can = true;
+
+		setTimeout2('$lazyload.refresh', window.$lazyload_refresh, 200);
 	};
 });
 
 Tangular.register('comment', function(value) {
-	return smilefy(urlify(Tangular.helpers.encode(value).replace(/\n/g, '<br />')));
+	return smilefy(mailify(urlify(Tangular.helpers.encode(value).replace(/\n/g, '<br />'))));
 });
 
 function smilefy(str) {
 	var db = { ':-)': 1, ':)': 1, ';)': 8, ':D': 0, '8)': 5, ':((': 7, ':(': 3, ':|': 2, ':P': 6, ':O': 4, ':*': 9, '+1': 10, '1': 11, '\/': 12 };
 	return str.replace(/(\-1|[:;8O\-)DP(|\*]|\+1){1,3}/g, function(match) {
 		var smile = db[match.replace('-', '')];
-		if (smile == null)
-			return match;
-		return '<span class="smiles smiles-' + smile + '"></span>';
+		return smile === undefined ? match : '<i class="smiles smiles-' + smile + '"></i>';
 	});
 }
 
@@ -257,5 +255,17 @@ function urlify(str) {
 			l = '';
 		url = c === 'www.' ? 'http://' + url : url;
 		return '<a href="' + url + '" target="_blank">' + url + '</a>' + l;
-	}) ;
+	});
+}
+
+function mailify(str) {
+	return str.replace(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g, function(m, b, c) {
+		var len = m.length;
+		var l = m.substring(len - 1);
+		if (l === '.' || l === ',')
+			m = m.substring(0, len - 1);
+		else
+			l = '';
+		return '<a href="mailto:' + m + '">' + m + '</a>' + l;
+	});
 }

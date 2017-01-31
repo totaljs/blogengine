@@ -58,7 +58,7 @@ function upload_markdown() {
 
 			// Store current file into the HDD
 			file.extension = U.getExtension(file.filename);
-			var filename = DB('files').binary.insert(file.filename, data) + '.' + file.extension;
+			var filename = NOSQL('files').binary.insert(file.filename, data) + '.' + file.extension;
 			id.push({ url: '/download/' + filename, filename: file.filename, width: file.width, height: file.height });
 
 			// Next file
@@ -84,7 +84,7 @@ function upload_picture() {
 		builder.resizeAlign(U.parseInt(self.body.width), U.parseInt(self.body.height), 'top');
 		builder.quality(90);
 		builder.minify();
-		builder.save(file.path, () => self.json(DB('files').binary.insert(file.path) + '.jpg'));
+		builder.save(file.path, () => self.json(NOSQL('files').binary.insert(file.path) + '.jpg'));
 	});
 }
 
@@ -113,7 +113,7 @@ function upload_base64() {
 			break;
 	}
 
-	var id = DB('files').binary.insert('base64' + ext, data);
+	var id = NOSQL('files').binary.insert('base64' + ext, data);
 	self.json('/download/' + id + ext);
 }
 

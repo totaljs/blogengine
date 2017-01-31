@@ -1,37 +1,25 @@
 NEWSCHEMA('Contact').make(function(schema) {
 
 	schema.define('id', 'String(20)');
-	schema.define('firstname', 'Capitalize(40)', true);
-	schema.define('lastname', 'Capitalize(40)', true);
+	schema.define('firstname', 'Camelize(40)', true);
+	schema.define('lastname', 'Camelize(40)', true);
 	schema.define('email', 'Email', true);
-	schema.define('message', String, true);
+	schema.define('body', String, true);
 	schema.define('phone', 'Phone');
-	schema.define('ip', 'String(80)');
-	schema.define('datecreated', Date);
-
-	// Sets default values
-	schema.setDefault(function(name) {
-		switch (name) {
-			case 'id':
-				return UID();
-			case 'datecreated':
-				return new Date();
-		}
-	});
+	schema.define('language', 'Lower(2)');
 
 	// Saves the model into the database
-	schema.setSave(function(error, model, options, callback) {
+	schema.setSave(function(error, model, options, callback, controller) {
 
-		// Saves to database
-		DB('contactforms').insert(model.$clean());
+		model.id = UID();
+		model.datecreated = F.datetime;
+		controller && (model.ip = controller.ip);
 
-		F.emit('contact.save', model);
-
-		// Returns response
+		NOSQL('contactforms').insert(model.$clean());
+		MODULE('webcounter').increment('contactforms');
 		callback(SUCCESS(true));
 
-		// Writes stats
-		MODULE('webcounter').increment('contactforms');
+		F.emit('contact.save', model);
 
 		// Sends email
 		var mail = F.mail(F.config.custom.emailcontactform, '@(Contact form #) ' + model.id, '=?/mails/contact', model, model.language || '');
