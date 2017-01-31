@@ -78,6 +78,6 @@ function rss() {
 			var doc = docs.items[i];
 			builder.push('<item><title>{0}</title><link>{1}/</link><description>{2}</description><pubDate>{3}</pubDate></item>'.format(doc.name.encode(), self.hostname(self.sitemap_url('detail', doc.category_linker, doc.linker)), doc.perex.encode(), doc.datecreated));
 		}
-		self.content('<?xml version="1.0" encoding="UTF-8" ?><rss version="2.0"><channel><title>bufferwall</title><link>{0}</link><description>{1}</description>{2}</channel></rss>'.format(self.hostname(), F.config.description, builder.join('')), 'text/xml');
+		self.content('<?xml version="1.0" encoding="UTF-8" ?><rss version="2.0"><channel><title>{0}</title><link>{1}</link><description>{2}</description>{3}</channel></rss>'.format(F.config.name, self.hostname(), F.config.description, builder.join('')), 'text/xml');
 	});
 }
