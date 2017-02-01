@@ -304,7 +304,7 @@ COMPONENT('textbox', function() {
 		else
 			value = value.toString();
 
-		WORKFLOW('reflow')(self.name);
+		EMIT('reflow', self.name);
 
 		switch (self.type) {
 			case 'email':
@@ -438,7 +438,7 @@ COMPONENT('textarea', function() {
 		else
 			value = value.toString();
 
-		WORKFLOW('reflow')(self.name);
+		EMIT('reflow', self.name);
 		return value.length > 0;
 	};
 
@@ -991,7 +991,7 @@ COMPONENT('form', function() {
 		self.element = el;
 
 		self.element.on('scroll', function() {
-			WORKFLOW('reflow')(self.name);
+			EMIT('reflow', self.name);
 		});
 
 		self.element.find('button').on('click', function(e) {
@@ -1019,7 +1019,7 @@ COMPONENT('form', function() {
 
 		var isHidden = !EVALUATE(self.path, self.condition);
 		self.element.toggleClass('hidden', isHidden);
-		WORKFLOW('reflow')(self.name);
+		EMIT('reflow', self.name);
 
 		if (isHidden) {
 			self.release(true);
@@ -1749,7 +1749,7 @@ COMPONENT('calendar', function() {
 
 		window.$calendar = self;
 
-		WORKFLOW('reflow', function() {
+		self.on('reflow', function() {
 			visible && EXEC('$calendar.hide');
 		});
 	};
