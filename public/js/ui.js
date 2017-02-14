@@ -1135,9 +1135,9 @@ COMPONENT('pictureupload', function() {
 				return;
 			}
 
-			self.change();
 			el.value = '';
 			self.set(response);
+			self.change(true);
 		});
 	};
 
