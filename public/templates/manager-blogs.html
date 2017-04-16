@@ -201,7 +201,7 @@
 			}
 
 			response.draft_old = response.draft;
-			SET('blogs.form', $.extend({ $index: index, tab: 'edit' }, response), true);
+			SET('blogs.form', $.extend({ tab: 'edit' }, response), true);
 			SET('blogs.response', null);
 			AJAX('GET {0}/api/blogs/{1}/stats/'.format(managerurl, id), 'blogs.form.stats');
 			SET('common.form', 'blogs');
