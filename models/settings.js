@@ -55,8 +55,8 @@ NEWSCHEMA('Settings').make(function(schema) {
 			F.config.custom = settings;
 
 			// Rewrites internal framework settings
-			F.config['mail.address.from'] = F.config.custom.emailsender;
-			F.config['mail.address.reply'] = F.config.custom.emailreply;
+			F.config['mail-address-from'] = F.config.custom.emailsender;
+			F.config['mail-address-reply'] = F.config.custom.emailreply;
 
 			// Refreshes internal informations
 			if (!F.config.custom.users)
