@@ -2,7 +2,7 @@
 @{foreach m in model.items}
 	<div class="col-md-6">
 		<div class="listing">
-			<a href="@{sitemap_url('detail', m.category_linker, m.linker)}" class="picture"><img src="/download/@{m.picture}" class="img-responsive img-rounded" /></a>
+			@{if m.picture }<a href="@{sitemap_url('detail', m.category_linker, m.linker)}" class="picture"><img src="/download/@{m.picture}" class="img-responsive img-rounded" alt="@{m.name}" /></a>@{fi}
 			<a href="@{sitemap_url('detail', m.category_linker, m.linker)}" class="title">@{m.name}</a>
 			<a href="@{sitemap_url('category', m.category_linker)}" class="category">@(Category:) <b>@{m.category}</b></a>
 			<div class="date"><i class="fa fa-clock-o"></i><span class="time">@{m.datecreated}</span>@{if m.countcomments}<b class="red"><i class="fa fa-comments"></i>@{m.countcomments}@{fi}</b></div>
