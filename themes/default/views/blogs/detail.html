@@ -7,7 +7,7 @@
 <input type="hidden" id="idblock" value="@{model.id}" />
 
 <div class="markdown">
-	<div><img src="/download/@{model.picture}" class="img-responsive img-rounded" alt="@{model.name}" /></div>
+	@{if model.picture}<div><img src="/download/@{model.picture}" class="img-responsive img-rounded" alt="@{model.name}" /></div>@{fi}
 	<br />
 	<div class="fs11 silver"><i class="fa fa-clock-o mr5"></i><span class="time">@{model.datecreated}</span>@{if model.author}, @{model.author}@{fi}</div>
 	@{!model.body}
