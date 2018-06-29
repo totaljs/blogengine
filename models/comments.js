@@ -133,6 +133,7 @@ NEWSCHEMA('Comment').make(function(schema) {
 				// Refreshes cache
 				F.cache.removeAll('comments' + idblog);
 				refresh();
+				callback();
 			});
 		});
 	});

@@ -3,7 +3,7 @@
 
 const COOKIE = '__webcounter';
 const REG_ROBOT = /search|agent|bot|crawler/i;
-const REG_HOSTNAME = /(http|https)\:\/\/(www\.)/gi;
+const REG_HOSTNAME = /(http|https):\/\/(www\.)/gi;
 const FILE_CACHE = 'webcounter.cache';
 const FILE_STATS = 'webcounter.nosql';
 const TIMEOUT_VISITORS = 1200; // 20 MINUTES

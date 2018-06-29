@@ -40,6 +40,7 @@ NEWSCHEMA('Settings').make(function(schema) {
 	// Gets settings
 	schema.setGet(function(error, model, options, callback) {
 		Fs.readFile(filename, function(err, data) {
+			var settings;
 			if (err)
 				settings= { 'manager-superadmin': 'admin:admin' };
 			else

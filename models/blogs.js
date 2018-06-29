@@ -14,11 +14,6 @@ NEWSCHEMA('Blog').make(function(schema) {
 	schema.define('body', String);
 	schema.define('datecreated', Date);
 
-	NOSQL('blogs').view('listing').make(function(filter) {
-		filter.fields('id', 'category', 'name', 'datecreated', 'linker', 'category_linker', 'picture', 'perex', 'tags', 'countcomments', 'countviews', 'draft', 'search');
-		filter.sort('datecreated', true);
-	});
-
 	schema.setQuery(function(error, controller, callback) {
 
 		var options = controller.query;
@@ -31,7 +26,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 
 		var take = U.parseInt(options.max);
 		var skip = U.parseInt(options.page * options.max);
-		var filter = NOSQL('blogs').find('listing');
+		var filter = NOSQL('blogs').find();
 
 		options.language && filter.where('language', options.language);
 		options.category && filter.where('category_linker', options.category);
@@ -46,6 +41,7 @@ NEWSCHEMA('Blog').make(function(schema) {
 		options.linker && filter.where('linker', '<>', options.linker);
 		options.skip && filter.where('id', '<>', options.skip);
 
+		filter.sort('datecreated', true);
 		filter.take(take);
 		filter.skip(skip);
 
@@ -144,7 +140,6 @@ function refresh() {
 
 	var categories = {};
 	var tags = {};
-	var latest = [];
 
 	if (F.config.custom.blogs)
 		F.config.custom.blogs.forEach(item => categories[item] = 0);
@@ -169,7 +164,7 @@ function refresh() {
 		});
 	};
 
-	NOSQL('blogs').find('listing').prepare(prepare).callback(function() {
+	NOSQL('blogs').find().prepare(prepare).callback(function() {
 		var output = [];
 		Object.keys(categories).forEach(key => output.push({ name: key, linker: key.slug(), count: categories[key] }));
 		F.global.blogs = output;
@@ -187,7 +182,7 @@ function refresh() {
 		F.cache.remove('homepage');
 	});
 
-	NOSQL('blogs').find('listing').make(function(builder) {
+	NOSQL('blogs').find().make(function(builder) {
 		builder.limit(5);
 		builder.where('draft', false);
 		builder.sort('datecreated', true);
