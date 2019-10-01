@@ -21,7 +21,7 @@ __Requirements__:
 
 - Total.js `+v3.3.0`
 
-## Template extending via components
+## Extend template via components
 
 The template supports extending body or panel via Total.js components. Each component must have defined group called `blogengine`.
 
