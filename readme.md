@@ -17,5 +17,20 @@ First you need to obtain Bufferwall token: <https://bufferwall.com>. Then downlo
 - run `$ node debug.js`
 - open browser `http://127.0.0.1:8000`
 
+__Requirements__:
+
+- Total.js `+v3.3.0`
+
+## Template extending via components
+
+The template supports extending body or panel via Total.js components. Each component must have defined group called `blogengine`.
+
+__Parts__:
+
+- `body-top`
+- `body-bottom`
+- `panel-top`
+- `panel-bottom`
+
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license-url]: license.txt
