@@ -1,29 +1,19 @@
-name                      : Blog Engine
-description               : Great articles about Total.js framework
-version                   : 2.0.0
-author                    : Peter Širka
+name                  : Bufferwall template
+allow_custom_titles   : true
+allow_ssc_validation  : true
 
-// A relative URL address into the blog management
-manager-url               : /$manager
+// Bufferwall token
+token                 : YOUR_TOKEN_TO_BUFFERWALL
 
-// Hidden super admin in the form username:password
-manager-superadmin        : admin:admin
+// Language: en, de, etc..
+language              :
 
-// Custom SMTP settings
-mail-smtp                 : YOUR.SMTPSERVER.COM
-// mail-smtp-options         : {"user":"","password":"","timeout":2000}
+url                   : https://template.bufferwall.com
+description           : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
 
-// Gmail SMTP settings
-// mail-smtp                : smtp.gmail.com
-// mail-smtp-options        : {"port":465,"secure":true,"user":"ENTER_YOUR_EMAIL","password":"ENTER_YOUR_PASSWORD","rejectUnauthorized":true}
-
-// Office365 SMTP settings
-// mail-smtp                : smtp.office365.com
-// mail-smtp-options        : {"port":587,"secure":false,"user":"ENTER_YOUR_EMAIL","password":"ENTER_YOUR_PASSWORD","tls":{"ciphers":"SSLv3"}}
-
-// Image convertor for resizing of pictures
-// Default image converter: im = ImageMagick, gm = GraphicsMagick
-default-image-converter   : gm
-
-// Default theme
-default-theme             : default
+facebook              : https://www.facebook.com/totaljs.web.framework/
+twitter               : https://twitter.com/totalframework
+github                : https://github.com/totaljs/
+linkedin              : https://www.linkedin.com/groups/8109884/
+youtube               :
+instagram             :

@@ -1,50 +1,53 @@
 exports.install = function() {
-	// COMMON
-	F.route('/', view_homepage, ['*Blog']);
-	F.route('#contact', 'contact');
-
-	// FILES
-	F.file('/download/', file_read);
+	ROUTE('/', posts);
+	ROUTE('/posts/{id}/', posts_detail);
+	ROUTE('/rss/', rss);
+	ROUTE('/{category}/', posts_category);
 };
 
-// ==========================================================================
-// COMMON
-// ==========================================================================
-
-// Homepage
-function view_homepage() {
+function posts() {
 	var self = this;
-	self.memorize('homepage', '1 minute', DEBUG, function() {
-		self.query.max = 10;
-		self.query.draft = false;
-		self.$query(self, self.callback('index'));
+	self.query.limit = self.query.page && self.query.page !== '1' ? 15 : 14;
+	self.query.languageid = CONF.language;
+	self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
+		FUNC.posts(self.query, self.callback('index'));
 	});
 }
 
-// ==========================================================================
-// FILES
-// ==========================================================================
+function posts_detail(id) {
+	var self = this;
+	self.memorize(self.url, '1 minute', function() {
+		FUNC.posts_detail(id, self.callback('detail'));
+	});
+}
 
-function file_read(req, res) {
-
-	var id = req.split[1].replace('.' + req.extension, '');
-
-	F.exists(req, res, function(next, filename) {
-		NOSQL('files').binary.read(id, function(err, stream, header) {
-
-			if (err) {
-				next();
-				return res.throw404();
+function rss() {
+	var self = this;
+	self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
+		self.query.languageid = CONF.language;
+		FUNC.posts(self.query, function(err, response) {
+			var builder = ['<?xml version="1.0" encoding="UTF-8" ?><rss version="2.0"><channel><title>{name}</title><link>{url}</link><description>{description}</description>'.arg(CONF, 'html')];
+			for (var i = 0; i < response.items.length; i++) {
+				var item = response.items[i];
+				item.url = CONF.url;
+				builder.push('<item><title>{name}</title><link>{url}/posts/{id}/</link><description>{summary}</description><image><url>{picture}</url></image></item>'.arg(item, 'html'));
 			}
-
-			var writer = require('fs').createWriteStream(filename);
-
-			CLEANUP(writer, function() {
-				res.file(filename);
-				next();
-			});
-
-			stream.pipe(writer);
+			builder.push('</channel></rss>');
+			self.content(builder.join(''), 'text/xml');
 		});
 	});
+}
+
+function posts_category(category) {
+	var self = this;
+	var category = MAIN.cl && MAIN.cl.categories ? MAIN.cl.categories.findItem('linker', category) : null;
+	if (category) {
+		self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
+			self.query.categoryid = category.id;
+			self.query.languageid = CONF.language;
+			self.title(category.name);
+			FUNC.posts(self.query, self.callback('index'));
+		});
+	} else
+		self.throw404();
 }

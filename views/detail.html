@@ -1,0 +1,61 @@
+@{meta(model.name + ' - ' + CONF.name, model.summary, model.tags, model.picture)}
+
+@{if model.picture.indexOf('empty') == -1}
+<div class="m"><img src="@{model.picture}" alt="@{model.name}" class="img-responsive img-rounded" /></div>
+@{fi}
+
+<div class="markdown" data-categoryid="@{model.categoryid}" data---="markdownpreview__null__html:1">
+	@{!model.body}
+	@{if model.similar && model.similar.length}
+	<div class="markdown markdown-similar">
+		<h3><i class="fa fa-book mr5"></i> @(Other posts)</h3>
+		<ul>
+		@{foreach m in model.similar}
+			<li><span class="gray">@{m.dtpublished.format('@(yyyy-MM-dd)')}</span><a href="/posts/@{m.id}/">@{m.name}</a></li>
+		@{end}
+		</ul>
+	</div>
+	@{fi}
+	<br />
+</div>
+
+@{section panel}
+	<div class="padding bg-smoke">
+		<div class="keyvalue">
+			<div class="key">@(Published)</div>
+			<div class="value">@{model.dtpublished.format('@(dd MMM. yyyy)')}</div>
+		</div>
+
+		@{if model.category}
+		<div class="keyvalue">
+			<div class="key">@(Category)</div>
+			<div class="value">@{model.category}</div>
+		</div>
+		@{fi}
+
+		<div class="keyvalue">
+			<div class="key">@(Count views)</div>
+			<div class="value">@{model.countviews}x</div>
+		</div>
+		@{if model.readingtime}
+		<div class="keyvalue">
+			<div class="key">@(Reading time)</div>
+			<div class="value">@{model.readingtime} @(min.)</div>
+		</div>
+		@{fi}
+		@{if model.tags.length}
+		<nav class="mt10">
+			@{foreach m in model.tags}
+			<a href="/?tag=@{encodeURIComponent(m)}" class="badge badge-blue"><i class="fa fa-hashtag"></i>@{m}</a>
+			@{end}
+		</nav>
+		@{fi}
+	</div>
+@{end}
+
+<script>
+	ON('ready', function() {
+		var el = $('.markdown');
+		$('header a[data-id="{0}"]'.format(el.attrd('categoryid'))).aclass('selected');
+	});
+</script>

@@ -1,0 +1,40 @@
+@{meta(CONF.name, CONF.description)}
+
+@{if url !== '/'}
+<h1 class="h1">@{title}</h1>
+@{fi}
+@{if query.tag}
+<h1 class="h1">@(Posts by tag:) &quot;@{query.tag}&quot;</h1>
+@{fi}
+
+@{if !model.items.length}
+	<br />
+	<br />
+	<div class="center">
+		<div class="m"><i class="fa fa-database fa-5x"></i></div>
+		<div>@(Database doesn't contain any posts.)</div>
+	</div>
+	<br />
+	<br />
+@{fi}
+
+<div class="row">
+	@{foreach m in model.items}
+	<div class="m col-lg-@{if model.page === 1 && (index === 0 || index === 1)}6@{else}4@{fi} col-sm-6">
+		<div class="postcard">
+			<a href="/posts/@{m.id}/" class="image"><img src="@{m.picture || '/img/empty.gif'}" class="img-responsive" alt="@{m.name}" border="0" /></a>
+			<div class="user">@{if m.userid !== m.ownerid}@{m.ownername} @(for) @{fi}@{m.username}</div>
+			<a href="/posts/@{m.id}/" class="title"><strong>@{m.name}</strong>. @{m.summary}</a>
+			<div class="date">@{m.dtpublished.format('@(dd MMM. yyyy)')}@{if m.readingtime}, @{m.readingtime} @(min. read)@{fi}</div>
+		</div>
+	</div>
+	@{end}
+</div>
+
+@{if model.pages > 1}
+<div class="pagination">
+	<nav>
+		@{helpers.paginate(model)}
+	</nav>
+</div>
+@{fi}
