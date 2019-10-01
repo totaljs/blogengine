@@ -4,11 +4,11 @@
 - [__HelpDesk with professional support__](https://helpdesk.totaljs.com)
 - [Documentation](https://docs.totaljs.com)
 
-# Bufferwall: BlogEngine template
+# BlogEngine template
 
 [![MIT License][license-image]][license-url]
 
-First you need to obtain Bufferwall token: <https://bufferwall.com>. Then download the source-code or `bundle` only (recommendation).
+First you need to obtain a token from: <https://bufferwall.com>. Then download the source-code or `bundle` only (recommendation).
 
 - open terminal / command-line
 - open app directory
