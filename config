@@ -9,7 +9,7 @@ token                 : YOUR_TOKEN_TO_BUFFERWALL
 language              :
 
 url                   : https://template.bufferwall.com
-description           : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+// description           : CUSTOM DESCRIPTION IN RIGHT PANEL (otherwise will be copied from Bufferwall profile)
 
 facebook              : https://www.facebook.com/totaljs.web.framework/
 twitter               : https://twitter.com/totalframework
