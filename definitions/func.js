@@ -1,7 +1,8 @@
 const SVG = '<svg width="100%" height="100%" viewBox="0 0 {0} {1}" version="1.1" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="{0}" height="{1}" style="fill:#bbb"/></svg>';
 
 FUNC.cl = function(callback) {
-	RESTBuilder.GET('https://bufferwall.com/api/ex/cl/').header('x-token', CONF.token).exec(callback);
+	var language = CONF.language;
+	RESTBuilder.GET('https://bufferwall.com/api/ex/cl/' + (language ? ('?languageid=' + language) : '')).header('x-token', CONF.token).exec(callback);
 };
 
 FUNC.account = function(callback) {
