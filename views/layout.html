@@ -67,7 +67,7 @@
 				<div class="panel">
 					<a href="/" class="photo"><img src="@{MAIN.account.photo}" alt="@{MAIN.account.name}" class="img-responsive" border="0" /></a>
 					<div class="name">@{MAIN.account.name}</div>
-					<p class="signature">@{MAIN.account.signature}</p>
+					<p class="signature">@{if CONF.description}@{CONF.description}@{else}@{MAIN.account.signature}@{fi}</p>
 					<div class="help center"><i class="fa fa-globe mr5"></i>@(Website:) <a href="@{MAIN.account.url}" target="_blank">@{MAIN.account.url}</a></div>
 					<div class="social">
 						@{if CONF.facebook}
