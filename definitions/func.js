@@ -13,6 +13,10 @@ FUNC.posts = function(query, callback) {
 	RESTBuilder.GET('https://bufferwall.com/api/ex/posts/', query).header('x-token', CONF.token).exec(callback);
 };
 
+FUNC.tiles = function(query, callback) {
+	RESTBuilder.GET('https://bufferwall.com/api/ex/tiles/', query).header('x-token', CONF.token).exec(callback);
+};
+
 function replaceimages(text) {
 
 	// External
@@ -38,7 +42,19 @@ FUNC.posts_detail = function(id, callback) {
 		}
 
 		if (response && response.body)
-			response.body = response.body.replace(/<img src\=".*?"/g, replaceimages);
+			response.body = response.body.replace(/<img src=".*?"/g, replaceimages);
+
+		callback(err, response);
+	});
+};
+
+FUNC.tiles_detail = function(id, callback) {
+	RESTBuilder.GET('https://bufferwall.com/api/ex/tiles/' + id).header('x-token', CONF.token).exec(function(err, response) {
+
+		if (response instanceof Array) {
+			callback(response[0].error, null);
+			return;
+		}
 
 		callback(err, response);
 	});

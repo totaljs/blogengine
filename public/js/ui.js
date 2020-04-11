@@ -1087,3 +1087,97 @@ COMPONENT('markdown', function (self) {
 
 	})();
 });
+
+COMPONENT('tiledetail', function(self, config, cls) {
+
+	self.singleton();
+
+	var cls2 = '.' + cls;
+	var visible = false;
+	var next, prev, nextread;
+
+	self.make = function() {
+
+		self.template = Tangular.compile(self.find('script').html());
+
+		self.aclass(cls + ' hidden');
+		self.append('<div class="{0}-container"><div class="{0}-controls"><button name="prev"><i class="fa fa-chevron-left"></i></button><button name="next"><i class="fa fa-chevron-right"></i></button></div><div class="{0}-image"><img class="img-responsive" width="600" height="600" /></div><div class="{0}-body"></div></div>'.format(cls));
+		self.on('resize', self.resize);
+		$(W).on('resize', self.resize);
+
+		next = self.find('button[name="next"]');
+		prev = self.find('button[name="prev"]');
+
+		self.event('click', function(e) {
+			if (e.target === self.dom || e.target.tagName === 'IMG')
+				self.hide();
+		});
+
+		self.event('click', 'button', function() {
+			nextread && nextread($(this).attrd('id'));
+		});
+	};
+
+	self.resize = function() {
+		setTimeout2(self.ID, self.resize2, 300);
+	};
+
+	self.resize2 = function() {
+	};
+
+	self.keydown = function(e) {
+		if (e.which === 27)
+			self.hide();
+
+		if (e.which === 39) {
+			if (next.hclass('hidden'))
+				self.hide();
+			else
+				next.trigger('click');
+		}
+
+		if (e.which === 37) {
+			if (prev.hclass('hidden'))
+				self.hide();
+			else
+				prev.trigger('click');
+		}
+	};
+
+	self.show = function(obj, nexttile) {
+		self.resize2();
+		self.find(cls2 + '-image img').attr('src', obj.picture);
+		self.find(cls2 + '-body').html(self.template(obj));
+		self.rclass('hidden');
+
+		if (!visible)
+			$(W).on('keydown', self.keydown);
+
+		var tiles = $('.tilecard');
+		var tp;
+		var tn;
+
+		for (var i = 0; i < tiles.length; i++) {
+			var item = tiles[i];
+			if (item.getAttribute('data-id') === obj.id) {
+				tp = tiles[i - 1];
+				tn = tiles[i + 1];
+				break;
+			}
+		}
+
+		prev.tclass('hidden', tp == null).attrd('id', tp ? tp.getAttribute('data-id') : '');
+		next.tclass('hidden', tn == null).attrd('id', tn ? tn.getAttribute('data-id') : '');
+
+		nextread = nexttile;
+		visible = true;
+	};
+
+	self.hide = function() {
+		self.aclass('hidden');
+		$(W).off('keydown', self.keydown);
+		visible = false;
+		location.hash = '';
+	};
+
+});

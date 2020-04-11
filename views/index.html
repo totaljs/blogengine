@@ -1,10 +1,30 @@
-@{meta(CONF.name, CONF.description)}
+@{if url === '/'}
+	@{meta(CONF.name, CONF.description)}
+@{fi}
 
 @{if url !== '/'}
 <h1 class="h1">@{title}</h1>
 @{fi}
+
 @{if query.tag}
 <h1 class="h1">@(Posts by tag:) &quot;@{query.tag}&quot;</h1>
+@{fi}
+
+@{if url === '/' && model.tiles}
+<div class="row">
+	@{foreach m in model.tiles.items}
+	<div class="m col-lg-3 col-xs-6">
+		<div class="tilecard" data-id="@{m.id}">
+			<a href="/#tile@{m.id}" class="image"><img src="@{m.picture || '/img/empty.gif'}" class="img-responsive" alt="@{m.username}" border="0" /></a>
+			<div class="name">@{m.name}</div>
+			<div class="date">@{m.dtpublished.format('@(dd MMM. yyyy)')}</div>
+		</div>
+	</div>
+	@{end}
+</div>
+<div class="m fs12">
+	<a href="/tiles/"><i class="far fa-image mr5"></i>@(Show all tiles)</a>
+</div>
 @{fi}
 
 @{if !model.items.length}

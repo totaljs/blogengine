@@ -21,6 +21,32 @@
 	<div data---="markdown"></div>
 	<div data---="imageviewer__null__container:p;selector:.gallery"></div>
 
+	<div data---="LAZY tiledetail">
+		<script type="text/html">
+			<div class="meta">
+				<img src="{{ userphoto }}" alt="{{ username }}" border="0" width="35" height="35" />
+				<div class="keyvalue">
+					<div class="date">{{ dtpublished | format('MMM dd. yyyy') }}</div>
+					<div>{{ if ownerid && ownerid !== userid }}<a href="https://bufferwall.com/users/{{ ownerlinker }}/">{{ ownername }}</a> @(in) {{ fi }}<a href="https://bufferwall.com/users/{{ userlinker }}/"><strong>{{ username }}</strong></a></div>
+				</div>
+			</div>
+			<div class="text">
+				<div>{{ body }}</div>
+				<div class="m mt5">
+				{{ foreach m in tags }}
+					<span class="mr5 color">#{{ m }}</span>
+				{{ end }}
+				</div>
+				{{ if url && url.length > 10 }}
+				<div class="url">
+					<div class="help">@(Read more):</div>
+					<a href="{{ url }}" target="_blank">{{ url }}</a>
+				</div>
+				{{ fi }}
+			</div>
+		</script>
+	</div>
+
 	<header>
 		<div class="container visible-sm visible-xs">
 			<div class="top">
@@ -46,6 +72,9 @@
 						@{foreach m in MAIN.cl.categories}
 							<a href="/@{m.linker}/" data-id="@{m.id}">@{m.name}</a>
 						@{end}
+						@{if CONF.tiles}
+						<a href="/tiles/" class="tiles visible-lg visible-md"><i class="far fa-image"></i></a>
+						@{fi}
 					</nav>
 				</div>
 			</div>

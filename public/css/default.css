@@ -6,6 +6,9 @@ $color            : black;
 html,body { margin: 0; padding: 0; }
 .img-rounded { border-radius: 2px; }
 
+.color { color: gray; }
+.fs12 { font-size: 12px; }
+
 header { border-bottom: 1px solid #E0E0E0; }
 header .top { padding: 30px 20px; }
 header hr { margin: 0; border-color: #E0E0E0; }
@@ -13,6 +16,8 @@ header .br { border-right: 1px solid #E0E0E0; }
 header nav { height: 48px; line-height: 40px; font-family: $font; padding: 0; background-color: white; }
 header nav a { color: black; padding: 0; display: inline-block; vertical-align: middle; font-size: 16px; font-weight: bold; margin: 0 0 0 20px; line-height: 46px; border-bottom: 3px solid transparent; }
 header nav a i { margin-right: 7px; }
+header nav .tiles { font-size: 20px; float: right; }
+header nav .tiles i { margin-right: 0; }
 header nav a:first-child { margin-left: 0; }
 header nav a:hover, header nav a.selected { text-decoration: none; border-bottom-color: black; }
 header .search { margin: 0; padding: 12px 0 0 15px; border-right: 1px solid #E0E0E0; height: 48px; background-color: #F8F8F8; }
@@ -86,11 +91,20 @@ footer a { color: black; }
 
 .postcard { background-color: #F8F8F8; }
 .postcard .image { display: block; margin-bottom: 10px; border: 1px solid #E0E0E0; }
-.postcard .title { display: block; height: 60px; line-height: 19px; font-size: 15px; color: #505050; padding: 0 10px; white-space: pre-line; overflow: hidden; }
+.postcard .title { display: block; height: 54px; line-height: 17px; font-size: 14px; color: #505050; padding: 0 10px; white-space: pre-line; overflow: hidden; }
 .postcard .title strong { color: black; }
 .postcard .title:hover { text-decoration: none; }
 .postcard .user { font-size: 11px; padding: 0 10px; color: gray; }
 .postcard .date { font-size: 12px; color: gray; padding: 0 10px 10px; }
+
+.tilecard { background-color: white; border: 1px solid #E0E0E0; }
+.tilecard .image { display: block; margin-bottom: 10px; cursor: pointer; position: relative; border-bottom: 1px solid #E0E0E0; }
+.tilecard .image span { position: absolute; background-color: white; border-radius: 100px; width: 24px; height: 24px; line-height: 24px; text-align: center; right: 15px; top: 10px; border: 1px solid #D0D0D0; }
+.tilecard .name { font-size: 11px; padding: 0 10px; color: gray; height: 14px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.tilecard .name a { color: #505050; }
+.tilecard .date { font-size: 11px; color: gray; padding: 1px 10px 5px 10px; }
+.tilecard .date b { color: $color; }
+.tilecard .date a { color: black; }
 
 .markdown { font-size: 16px; line-height: 22px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; color: #404040; overflow-x: hidden; }
 .markdown code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
@@ -170,3 +184,37 @@ footer a { color: black; }
 .ui-imageviewer-buttons button[name='next'] { right: 15px; }
 .ui-imageviewer-viewer { display: table; width: 100%; }
 .ui-imageviewer-cell { display: table-cell; width: 100%; height: 100%; vertical-align: middle; text-align: center; }
+
+.ui-tiledetail { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 10; background-color: rgba(0,0,0,0.8); }
+.ui-tiledetail-container { position: absolute; background-color: white; width: 900px; height: 600px; box-shadow: 5px 5px 40px rgba(0,0,0,0.4); top: 50%; left: 50%; margin: -300px 0 0 -450px; }
+.ui-tiledetail-image { width: 600px; height: 600px; float: left; }
+.ui-tiledetail-body { margin-left: 600px; border-left: 1px solid #E0E0E0; height: 600px; overflow: hidden; }
+.ui-tiledetail-body .meta { background-color: #F8F8F8; padding: 15px 15px 12px; line-height: 18px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }
+.ui-tiledetail-body .meta img { width: 35px; border-radius: 100px; float: left; margin-right: 10px; }
+.ui-tiledetail-body .meta a { color: black; }
+.ui-tiledetail-body .meta .date { font-size: 12px; margin: 1px 0 0; color: gray; line-height: 14px; }
+.ui-tiledetail-body .keyvalue { border-bottom: 0; }
+.ui-tiledetail-body .meta .date i { margin-right: 5px; font-size: 12px; vertical-align: top; padding: 2px 0 0; }
+.ui-tiledetail-body .text { font-size: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; padding: 15px; word-wrap: break-word; }
+.ui-tiledetail-body .url { border-top: 1px solid #E0E0E0; padding: 10px 0; }
+
+.ui-tiledetail-controls { position: relative; }
+.ui-tiledetail-controls button { position: absolute; background: transparent; border: 0; font-size: 30px; color: white; top: 270px; }
+.ui-tiledetail-controls button[name='prev'] { left: -50px; }
+.ui-tiledetail-controls button[name='next'] { right: -50px; }
+
+@media(min-width:768px) and (max-width:991px) {
+	.ui-tiledetail-container { width: 600px; height: 400px; margin: -200px 0 0 -300px; }
+	.ui-tiledetail-image { width: 400px; height: 400px; }
+	.ui-tiledetail-body { margin-left: 400px; height: 400px; }
+	.ui-tiledetail-body .text { font-size: 13px; line-height: 16px; }
+	.ui-tiledetail-controls button { top: 180px; }
+}
+
+@media(max-width:768px) {
+	.ui-tiledetail-container { width: 100%; margin: 0; left: 0; top: 0; z-index: 1; height: 100%; }
+	.ui-tiledetail-image { width: 100%; height: auto; float: none; }
+	.ui-tiledetail-body { margin-left: 0; height: auto; width: auto; }
+	.ui-tiledetail-body .text { font-size: 13px; line-height: 16px; }
+	.ui-tiledetail-controls button { display: none; }
+}

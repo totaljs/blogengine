@@ -1,8 +1,10 @@
 exports.install = function() {
 	ROUTE('/', posts);
 	ROUTE('/posts/{id}/', posts_detail);
+	ROUTE('/tiles/', tiles);
 	ROUTE('/rss/', rss);
 	ROUTE('/{category}/', posts_category);
+	ROUTE('/api/tiles/{id}/', tiles_detail);
 };
 
 function posts() {
@@ -10,7 +12,33 @@ function posts() {
 	self.query.limit = self.query.page && self.query.page !== '1' ? 15 : 14;
 	self.query.languageid = CONF.language;
 	self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
-		FUNC.posts(self.query, self.callback('index'));
+
+		var page = self.query.page || '1';
+		if (page === '1' && CONF.tiles) {
+			FUNC.posts(self.query, function(err, response) {
+				FUNC.tiles({ limit: 4 }, function(err, tiles) {
+					response.tiles = tiles;
+					self.view('index', response);
+				});
+			});
+		} else
+			FUNC.posts(self.query, self.callback('index'));
+	});
+}
+
+function tiles() {
+	var self = this;
+	self.query.limit = 16;
+	self.query.languageid = CONF.language;
+	self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
+		FUNC.tiles(self.query, self.callback('tiles'));
+	});
+}
+
+function tiles_detail(id) {
+	var self = this;
+	self.memorize(self.url, '1 minute', function() {
+		FUNC.tiles_detail(id, self.callback());
 	});
 }
 

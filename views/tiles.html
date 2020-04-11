@@ -1,0 +1,32 @@
+@{meta('@(Tiles: from )' + CONF.name, CONF.description)}
+
+@{if !model.items.length}
+	<br />
+	<br />
+	<div class="center">
+		<div class="m"><i class="fa fa-database fa-5x"></i></div>
+		<div>@(Database doesn't contain any tiles.)</div>
+	</div>
+	<br />
+	<br />
+@{fi}
+
+<div class="row">
+	@{foreach m in model.items}
+	<div class="m col-lg-3 col-xs-6">
+		<div class="tilecard" data-id="@{m.id}">
+			<a href="/tiles/#tile@{m.id}" class="image"><img src="@{m.picture || '/img/empty.gif'}" class="img-responsive" alt="@{m.username}" border="0" /></a>
+			<div class="name">@{m.name}</div>
+			<div class="date">@{m.dtpublished.format('@(dd MMM. yyyy)')}</div>
+		</div>
+	</div>
+	@{end}
+</div>
+
+@{if model.pages > 1}
+<div class="pagination">
+	<nav>
+		@{helpers.paginate(model)}
+	</nav>
+</div>
+@{fi}
