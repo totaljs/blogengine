@@ -1150,8 +1150,10 @@ COMPONENT('tiledetail', function(self, config, cls) {
 		self.find(cls2 + '-body').html(self.template(obj));
 		self.rclass('hidden');
 
-		if (!visible)
+		if (!visible) {
+			$('html,body').aclass(cls + '-noscroll');
 			$(W).on('keydown', self.keydown);
+		}
 
 		var tiles = $('.tilecard');
 		var tp;
@@ -1176,6 +1178,7 @@ COMPONENT('tiledetail', function(self, config, cls) {
 	self.hide = function() {
 		self.aclass('hidden');
 		$(W).off('keydown', self.keydown);
+		$('html,body').rclass(cls + '-noscroll');
 		visible = false;
 		location.hash = '';
 	};
