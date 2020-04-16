@@ -14,6 +14,11 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/apexcharts/3.8.5/apexcharts.min.js"></script>
 	<script src="//cdn.componentator.com/spa.min@18.js"></script>
+
+	<meta property="og:url" content="@{CONF.url}">
+	<meta property="og:site_name" content="@{CONF.name}">
+	@{section('ogtags')}
+
 	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
 </head>
 <body data---="lazyimages">
