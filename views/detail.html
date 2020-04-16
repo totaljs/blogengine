@@ -1,4 +1,12 @@
-@{meta(model.name + ' - ' + CONF.name, model.summary, model.tags, model.picture)}
+@{meta(model.name + ' - ' + CONF.name, model.summary, model.tags)}
+
+@{section ogtags}
+	<meta property="og:title" content="@{model.name + ' - ' + CONF.name}">
+	<meta property="og:description" content="@{model.summary}">
+	<meta property="og:image" content="@{model.picture}">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="600">
+@{end}
 
 @{if model.picture.indexOf('empty') == -1}
 <div class="m"><img src="@{model.picture}" alt="@{model.name}" class="img-responsive img-rounded" /></div>
