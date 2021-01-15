@@ -1,25 +1,21 @@
-[![Support](https://www.totaljs.com/img/button-support.png)](https://www.totaljs.com/support/)
-
-- [__Live chat with professional support__](https://messenger.totaljs.com)
-- [__HelpDesk with professional support__](https://helpdesk.totaljs.com)
-- [Documentation](https://docs.totaljs.com)
-
 # BlogEngine template
 
-[![MIT License][license-image]][license-url]
+- [Documentation](https://docs.totaljs.com)
+- [Join Total.js Telegram](https://t.me/totaljs)
+- [Support](https://www.totaljs.com/support/)
 
 First you need to obtain a token from: <https://bufferwall.com>. Then download the source-code or `bundle` only (recommendation).
 
 - open terminal / command-line
 - open app directory
-- install latest version of Total.js from NPM `$ npm install total.js`
+- install latest version of Total.js from NPM `$ npm install total4`
 - modify `/config` file
-- run `$ node debug.js`
+- run `$ node index.js`
 - open browser `http://127.0.0.1:8000`
 
 __Requirements__:
 
-- Total.js `+v3.3.0`
+- Total.js `+v4`
 
 ## Extend template via components
 

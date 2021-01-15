@@ -2,14 +2,14 @@
 	"name": "bufferwall",
 	"description": "Total.js Bufferwall Reader",
 	"version": "1.0.0",
-	"main": "debug.js",
+	"main": "index.js",
 	"dependencies": {
-		"total.js": "latest"
+		"total4": "latest"
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"keywords": ["spa", "template", "totaljs"],
+	"keywords": ["blogengine", "bufferwall"],
 	"author": "Peter Širka",
 	"license": "MIT"
 }

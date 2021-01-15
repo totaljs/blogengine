@@ -336,7 +336,7 @@ COMPONENT('markdownpreview', 'showsecret:Show secret data;hidesecret:Hide secret
 			chart.render();
 		});
 
-		el.find('.lang-linerchar').each(function() {
+		el.find('.lang-linerchart').each(function() {
 
 			var t = this;
 			if (t.$mdloaded)
@@ -417,7 +417,7 @@ COMPONENT('markdownpreview', 'showsecret:Show secret data;hidesecret:Hide secret
 			}
 		});
 
-		el.find('.code').rclass('hidden');
+		el.find('.markdown-code').rclass('hidden');
 
 		if (config.headlines) {
 			var arr = [];

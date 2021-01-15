@@ -50,13 +50,10 @@ FUNC.posts_detail = function(id, callback) {
 
 FUNC.tiles_detail = function(id, callback) {
 	RESTBuilder.GET('https://bufferwall.com/api/ex/tiles/' + id).header('x-token', CONF.token).exec(function(err, response) {
-
-		if (response instanceof Array) {
+		if (response instanceof Array)
 			callback(response[0].error, null);
-			return;
-		}
-
-		callback(err, response);
+		else
+			callback(err, response);
 	});
 };
 
