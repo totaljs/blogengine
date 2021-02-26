@@ -44,7 +44,7 @@
 		<div class="postcard">
 			<a href="/posts/@{m.id}/" class="image"><img src="@{m.picture || '/img/empty.gif'}" class="img-responsive" alt="@{m.name}" border="0" /></a>
 			<div class="user">@{if m.userid !== m.ownerid}@{m.ownername} @(for) @{fi}@{m.username}</div>
-			<a href="/posts/@{m.id}/" class="title"><strong>@{m.name}</strong>. @{m.summary}</a>
+			<a href="/posts/@{m.id}/" class="title">@{if m.age < 3}<span class="new">@(NEW)</span>@{fi}<strong>@{m.name}</strong>. @{m.summary}</a>
 			<div class="date">@{m.dtpublished.format('@(dd MMM. yyyy)')}@{if m.readingtime}, @{m.readingtime} @(min. read)@{fi}</div>
 		</div>
 	</div>

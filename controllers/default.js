@@ -1,10 +1,10 @@
 exports.install = function() {
-	ROUTE('/', posts);
-	ROUTE('/posts/{id}/', posts_detail);
-	ROUTE('/tiles/', tiles);
-	ROUTE('/rss/', rss);
-	ROUTE('/{category}/', posts_category);
-	ROUTE('/api/tiles/{id}/', tiles_detail);
+	ROUTE('GET /', posts);
+	ROUTE('GET /posts/{id}/', posts_detail);
+	ROUTE('GET /tiles/', tiles);
+	ROUTE('GET /rss/', rss);
+	ROUTE('GET /{category}/', posts_category);
+	ROUTE('GET /api/tiles/{id}/', tiles_detail);
 };
 
 function posts() {
