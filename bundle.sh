@@ -7,7 +7,7 @@ cp -a ../public/ public
 cp -a ../resources/ resources
 cp -a ../views/ views
 
-totaljs --bundle blogengine.bundle
+total4 --bundle blogengine.bundle
 cp blogengine.bundle ../blogengine.bundle
 
 cd ..

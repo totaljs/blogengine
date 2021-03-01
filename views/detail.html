@@ -19,7 +19,7 @@
 		<h3><i class="fa fa-book mr5"></i> @(Other posts)</h3>
 		<ul>
 		@{foreach m in model.similar}
-			<li><span class="gray">@{m.dtpublished.format('@(yyyy-MM-dd)')}</span><a href="/posts/@{m.id}/">@{m.name}</a></li>
+			<li><span class="gray">@{m.dtpublished.format('@(yyyy-MM-dd)')}</span><a href="/posts/@{m.id}/">@{if m.age < 3}<b>@(NEW)</b>@{fi}@{m.name}</a></li>
 		@{end}
 		</ul>
 	</div>

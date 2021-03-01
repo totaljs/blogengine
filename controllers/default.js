@@ -16,8 +16,14 @@ function posts() {
 		var page = self.query.page || '1';
 		if (page === '1' && CONF.tiles) {
 			FUNC.posts(self.query, function(err, response) {
+
+				if (err) {
+					self.invalid(err);
+					return;
+				}
+
 				FUNC.tiles({ limit: 4 }, function(err, tiles) {
-					response.tiles = tiles;
+					response.tiles = tiles || EMPTYOBJECT;
 					self.view('index', response);
 				});
 			});
@@ -54,6 +60,12 @@ function rss() {
 	self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
 		self.query.languageid = CONF.language;
 		FUNC.posts(self.query, function(err, response) {
+
+			if (err) {
+				self.invalid(err);
+				return;
+			}
+
 			var builder = ['<?xml version="1.0" encoding="UTF-8" ?><rss version="2.0"><channel><title>{name}</title><link>{url}</link><description>{description}</description>'.arg(CONF, 'html')];
 			for (var i = 0; i < response.items.length; i++) {
 				var item = response.items[i];

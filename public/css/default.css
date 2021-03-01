@@ -143,6 +143,7 @@ footer a { color: black; }
 .markdown-similar { border: 2px solid #E0E0E0; border-radius: 3px; padding: 20px 20px 0; background-color: #F8F8F8; margin-top: 20px; font-size: 16px; font-family: Arial; }
 .markdown-similar h3 { margin-top: 0; }
 .markdown-similar li span { float: right; }
+.markdown-similar li b { background-color: red; color: #FFF; font-size: 11px; padding: 2px 4px; border-radius: var(--radius); float: left; line-height: 11px; font-weight: bold; margin: 3px 5px 0 0; }
 .markdown-similar li a { margin-right: 50px; display: block; }
 
 .video { position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0; margin-bottom: 15px; }

@@ -9,8 +9,19 @@ FUNC.account = function(callback) {
 	RESTBuilder.GET('https://bufferwall.com/api/ex/account/').header('x-token', CONF.token).exec(callback);
 };
 
-FUNC.posts = function(query, callback) {
-	RESTBuilder.GET('https://bufferwall.com/api/ex/posts/', query).header('x-token', CONF.token).exec(callback);
+FUNC.posts = function(query, callback, timeoutcount) {
+
+	if (timeoutcount > 3) {
+		callback('Timeout', null);
+		return;
+	}
+
+	RESTBuilder.GET('https://bufferwall.com/api/ex/posts/', query).header('x-token', CONF.token).exec(function(err, response, output) {
+		if (output.status === 408)
+			setTimeout(FUNC.posts, 500, query, callback, (timeoutcount || 0) + 1);
+		else
+			callback(err, response);
+	});
 };
 
 FUNC.tiles = function(query, callback) {
