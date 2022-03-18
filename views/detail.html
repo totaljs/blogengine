@@ -6,7 +6,7 @@
 	<meta property="og:image" content="@{model.picture}">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="600">
-	<meta property="og:url" content="@{url}">
+	<meta property="og:url" content="@{CONF.url}@{url}">
 @{end}
 
 @{if model.picture.indexOf('empty') == -1}
