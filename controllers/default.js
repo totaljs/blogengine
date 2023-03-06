@@ -3,6 +3,7 @@ exports.install = function() {
 	ROUTE('GET /posts/{id}/', posts_detail);
 	ROUTE('GET /tiles/', tiles);
 	ROUTE('GET /rss/', rss);
+	ROUTE('GET /json/', json);
 	ROUTE('GET /{category}/', posts_category);
 	ROUTE('GET /api/tiles/{id}/', tiles_detail);
 };
@@ -52,6 +53,17 @@ function posts_detail(id) {
 	var self = this;
 	self.memorize(self.url, '1 minute', function() {
 		FUNC.posts_detail(id, self.callback('detail'));
+	});
+}
+
+function json() {
+	var self = this;
+	self.query.languageid = CONF.language;
+	FUNC.posts(self.query, function(err, response) {
+		if (err)
+			self.invalid(err);
+		else
+			self.json(response.items);
 	});
 }
 

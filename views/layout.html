@@ -8,22 +8,23 @@
 	<meta name="format-detection" content="telephone=no" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
 	<meta name="robots" content="all,follow" />
-	<link rel="stylesheet" href="//cdn.componentator.com/spa.min@18@{if CONF.proicons}pro@{fi}.css" />
+	<link rel="stylesheet" href="//cdn.componentator.com/spa.min@19@{if CONF.proicons}pro@{fi}.css" />
 	<link rel="alternate" type="application/rss+xml" href="/rss/" title="RSS - @{CONF.name}">
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/apexcharts/3.8.5/apexcharts.min.js"></script>
-	<script src="//cdn.componentator.com/spa.min@18.js"></script>
+	<script src="//cdn.componentator.com/spa.min@19.js"></script>
 	<meta property="og:site_name" content="@{CONF.name}">
 	@{section('ogtags')}
 	@{import('meta', 'head', 'default.css', 'default.js + ui.js', 'favicon.ico')}
 </head>
-<body data---="lazyimages">
+<body>
 
-	<div data---="markdown"></div>
-	<div data---="imageviewer__null__container:p;selector:.gallery"></div>
+	<ui-component name="lazyimages"></ui-component>
+	<ui-component name="markdown"></ui-component>
+	<ui-component name="imageviewer" config="container:p;selector:.gallery"></ui-component>
 
-	<div data---="LAZY tiledetail">
+	<ui-component name="LAZY tiledetail">
 		<script type="text/html">
 			<div class="meta">
 				<img src="{{ userphoto }}" alt="{{ username }}" border="0" width="35" height="35" />
@@ -47,7 +48,7 @@
 				{{ fi }}
 			</div>
 		</script>
-	</div>
+	</ui-component>
 
 	<header>
 		<div class="container visible-sm visible-xs">
@@ -69,15 +70,17 @@
 					</form>
 				</div>
 				<div class="col-md-9 col-md-pull-3 br">
-					<nav data---="aselected__null__strict:1">
-						<a href="/"><i class="fa fa-home"></i>@(All posts)</a>
-						@{foreach m in MAIN.cl.categories}
-							<a href="/@{m.linker}/" data-id="@{m.id}">@{m.name}</a>
-						@{end}
-						@{if CONF.tiles}
-						<a href="/tiles/" class="tiles visible-lg visible-md"><i class="far fa-image"></i></a>
-						@{fi}
-					</nav>
+					<ui-component name="aselected" config="strict:1">
+						<nav>
+							<a href="/"><i class="fa fa-home"></i>@(All posts)</a>
+							@{foreach m in MAIN.cl.categories}
+								<a href="/@{m.linker}/" data-id="@{m.id}">@{m.name}</a>
+							@{end}
+							@{if CONF.tiles}
+							<a href="/tiles/" class="tiles visible-lg visible-md"><i class="far fa-image"></i></a>
+							@{fi}
+						</nav>
+					</ui-component>
 				</div>
 			</div>
 		</div>

@@ -13,7 +13,7 @@
 <div class="m"><img src="@{model.picture}" alt="@{model.name}" class="img-responsive img-rounded" /></div>
 @{fi}
 
-<div class="markdown" data-categoryid="@{model.categoryid}" data---="markdownpreview__null__html:1">
+<ui-component name="markdowpreview"  config="html:1" class="markdown" data-categoryid="@{model.categoryid}">
 	@{!model.body}
 	@{if model.similar && model.similar.length}
 	<div class="markdown markdown-similar">
@@ -26,7 +26,7 @@
 	</div>
 	@{fi}
 	<br />
-</div>
+</ui-component>
 
 @{section panel}
 	<div class="padding bg-smoke">
