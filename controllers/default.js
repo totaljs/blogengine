@@ -62,8 +62,11 @@ function json() {
 	FUNC.posts(self.query, function(err, response) {
 		if (err)
 			self.invalid(err);
-		else
+		else {
+			for (var item of response.items)
+				item.url = CONF.url + '/posts/{0}/'.format(item.id);
 			self.json(response.items);
+		}
 	});
 }
 
@@ -79,8 +82,7 @@ function rss() {
 			}
 
 			var builder = ['<?xml version="1.0" encoding="UTF-8" ?><rss version="2.0"><channel><title>{name}</title><link>{url}</link><description>{description}</description>'.arg(CONF, 'html')];
-			for (var i = 0; i < response.items.length; i++) {
-				var item = response.items[i];
+			for (var item of response.items) {
 				item.url = CONF.url;
 				builder.push('<item><title>{name}</title><link>{url}/posts/{id}/</link><description>{summary}</description><image><url>{picture}</url></image></item>'.arg(item, 'html'));
 			}
