@@ -10,7 +10,7 @@ exports.install = function() {
 
 function posts() {
 	var self = this;
-	self.query.limit = self.query.page && self.query.page !== '1' ? 15 : 14;
+	self.query.limit = self.query.page && self.query.page !== '1' ? 17 : 14;
 	self.query.languageid = CONF.language;
 	self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
 
@@ -23,10 +23,13 @@ function posts() {
 					return;
 				}
 
-				FUNC.tiles({ limit: 4 }, function(err, tiles) {
-					response.tiles = tiles || EMPTYOBJECT;
+				if (CONF.tiles) {
+					FUNC.tiles({ limit: 4 }, function(err, tiles) {
+						response.tiles = tiles || EMPTYOBJECT;
+						self.view('index', response);
+					});
+				} else
 					self.view('index', response);
-				});
 			});
 		} else
 			FUNC.posts(self.query, self.callback('index'));
@@ -99,6 +102,7 @@ function posts_category(category) {
 		self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
 			self.query.categoryid = category.id;
 			self.query.languageid = CONF.language;
+			self.query.limit = self.query.page && self.query.page !== '1' ? 15 : 14;
 			self.title(category.name);
 			FUNC.posts(self.query, self.callback('index'));
 		});
