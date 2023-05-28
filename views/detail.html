@@ -13,7 +13,7 @@
 <div class="m"><img src="@{model.picture}" alt="@{model.name}" class="img-responsive img-rounded" /></div>
 @{fi}
 
-<ui-component name="markdowpreview"  config="html:1" class="markdown" data-categoryid="@{model.categoryid}">
+<ui-component name="markdownpreview" config="html:1" class="markdown" data-categoryid="@{model.categoryid}">
 	@{!model.body}
 	@{if model.similar && model.similar.length}
 	<div class="markdown markdown-similar">
