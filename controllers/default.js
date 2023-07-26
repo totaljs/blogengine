@@ -10,7 +10,7 @@ exports.install = function() {
 
 function posts() {
 	var self = this;
-	self.query.limit = self.query.page && self.query.page !== '1' ? 17 : 14;
+	self.query.limit = self.query.page && self.query.page !== '1' ? 18 : 14;
 	self.query.languageid = CONF.language;
 	self.memorize(self.url + '?' + self.uri.search, '2 minutes', function() {
 
