@@ -1,11 +1,16 @@
 function resizeforce() {
+
 	var w = WIDTH();
 	if (w === 'xs' || w === 'sm')
 		return;
+
 	var el = $('.body');
-	var h = WH - el.offset().top - 200;
-	el.css('min-height', h);
-	$('.panel').css('min-height', el.height());
+	if (el.length) {
+		var h = WH - el.offset().top - 200;
+		el.css('min-height', h);
+		$('.panel').css('min-height', el.height());
+	} else
+		setTimeout(resizeforce, 500);
 }
 
 $(W).on('resize', resizeforce);

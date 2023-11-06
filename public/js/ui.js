@@ -255,11 +255,10 @@ COMPONENT('markdownpreview', 'showsecret:Show secret data;hidesecret:Hide secret
 			var el = $(this);
 			var next = el.next();
 			next.tclass('hidden');
-
 			var is = next.hclass('hidden');
 			var icons = el.find('i');
-			icons.eq(0).tclass('fa-unlock', !is).tclass('fa-lock', is);
-			icons.eq(1).tclass('fa-angle-up', !is).tclass('fa-angle-down', is);
+			icons.eq(0).tclass('ti-unlock', !is).tclass('ti-lock', is);
+			icons.eq(1).tclass('ti-angle-up', !is).tclass('ti-angle-down', is);
 			el.find('b').html(config[(is ? 'show' : 'hide') + 'secret']);
 		});
 	};
@@ -278,7 +277,7 @@ COMPONENT('markdownpreview', 'showsecret:Show secret data;hidesecret:Hide secret
 
 		el.find('.lang-secret').each(function() {
 			var el = $(this);
-			el.parent().replaceWith('<div class="secret"><span class="showsecret"><i class="fa fa-lock"></i><i class="fa pull-right fa-angle-down"></i><b>' + config.showsecret + '</b></span><div class="hidden">' + el.html().trim().markdown() +'</div></div>');
+			el.parent().replaceWith('<div class="secret"><span class="showsecret"><i class="ti ti-lock"></i><i class="ti pull-right ti-angle-down"></i><b>' + config.showsecret + '</b></span><div class="hidden">' + el.html().trim().markdown() +'</div></div>');
 		});
 
 		el.find('.lang-video').each(function() {
@@ -770,7 +769,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 				var diff;
 				var init = false;
 				var tmp;
-				var unclosed = 0;
 
 				for (var i = 0; i < arr.length; i++) {
 
@@ -794,10 +792,8 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 						tags.push(end + '</li>');
 						lines.push(beg);
 						lines.push(li.line);
-						unclosed++;
 					} else if (diff < 0) {
 						while (diff < 0) {
-							unclosed--;
 							tmp = tags.pop();
 							lines.push(tmp);
 							diff++;
@@ -1034,9 +1030,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 			var isblock = false;
 			var ishead = 0;
 			var isprevblock = false;
-			var prev;
-			var prevsize = 0;
-			var previndex;
 			var tmp;
 			var headline = '<{0} id="{3}" class="markdown-line" data-index="{1}">{2}</{0}>';
 
@@ -1221,7 +1214,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 							line = opt.html(line, 'block');
 						builder.push('<div class="markdown-block markdown-line" data-line="{0}"><span class="markdown-showblock"><i class="ti ti-plus"></i>{1}</span><div class="hidden">'.format(i, line));
 					}
-					prev = '';
 					continue;
 				}
 
@@ -1243,7 +1235,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 					iscode = true;
 					if (opt.code !== false)
 						tmp = '<div class="markdown-code markdown-line hidden"><pre class="noscrollbar"><code class="lang-{0}">'.format(lines[i].substring(3));
-					prev = 'code';
 					continue;
 				}
 
@@ -1300,7 +1291,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 					closeul();
 					if (opt.emptynewline !== false)
 						builder.push('<br />');
-					prev = 'br';
 					continue;
 				}
 
@@ -1314,7 +1304,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 								if (opt.tables !== false)
 									builder.push('<table class="table table-bordered"><thead>');
 								table = [];
-								prev = 'table';
 								ishead = 2;
 							} else {
 								table = [];
@@ -1328,7 +1317,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 								}
 								if (opt.tables !== false)
 									builder.push('<table class="table table-bordered"><thead>');
-								prev = 'table';
 								ishead = 1;
 								i++;
 							}
@@ -1360,7 +1348,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 								tmp = opt.html(tmp, '#');
 							builder.push(headline.format('h1', i, tmp, markdown_id(tmp)));
 						}
-						prev = '#';
 						continue;
 					}
 
@@ -1371,7 +1358,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 								tmp = opt.html(tmp, '##');
 							builder.push(headline.format('h2', i, tmp, markdown_id(tmp)));
 						}
-						prev = '##';
 						continue;
 					}
 
@@ -1382,7 +1368,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 								tmp = opt.html(tmp, '###');
 							builder.push(headline.format('h3', i, tmp, markdown_id(tmp)));
 						}
-						prev = '###';
 						continue;
 					}
 
@@ -1393,7 +1378,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 								tmp = opt.html(tmp, '####');
 							builder.push(headline.format('h4', i, tmp, markdown_id(tmp)));
 						}
-						prev = '####';
 						continue;
 					}
 
@@ -1404,7 +1388,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 								tmp = opt.html(tmp, '#####');
 							builder.push(headline.format('h5', i, tmp, markdown_id(tmp)));
 						}
-						prev = '#####';
 						continue;
 					}
 				}
@@ -1412,7 +1395,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 				tmp = line.substring(0, 3);
 
 				if (tmp === '---' || tmp === '***') {
-					prev = 'hr';
 					if (opt.hr !== false)
 						builder.push('<hr class="markdown-line' + (tmp.charAt(0) === '-' ? '1' : '2') + ' markdown-line" data-line="' + i + '" />');
 					continue;
@@ -1434,7 +1416,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 							line = opt.html(line, 'blockquote');
 						builder.push('<blockquote class="markdown-line" data-line="' + i + '">' + line + '</blockquote>');
 					}
-					prev = '>';
 					continue;
 				}
 
@@ -1445,7 +1426,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 							line = opt.html(line, 'section');
 						builder.push('<section class="markdown-line" data-line="' + i + '">' + line + '</section>');
 					}
-					prev = '<';
 					continue;
 				}
 
@@ -1481,7 +1461,6 @@ COMPONENT('markdown', 'highlight:true;charts:false', function (self, config) {
 							line = opt.html(line, opt.linetag);
 					}
 					line && builder.push((opt.linetag ? ('<' + opt.linetag + ' class="markdown-line" data-line="' + i +  '">') : '') + line.trim() + (opt.linetag ? ('</' + opt.linetag + '>') : ''));
-					prev = 'p';
 				}
 			}
 
