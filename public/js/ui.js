@@ -403,7 +403,11 @@ COMPONENT('markdownpreview', 'showsecret:Show secret data;hidesecret:Hide secret
 			t.$mdloaded = 1;
 			var el = $(t);
 			var href = el.attr('href');
-			href.substring(0, 1) !== '/' && el.attr('target', '_blank');
+			var c = href.substring(0, 1);
+
+			if (c !== '/' && c !== '#')
+				el.attr('target', '_blank');
+
 			if (href === '#') {
 				var beg = '';
 				var end = '';
