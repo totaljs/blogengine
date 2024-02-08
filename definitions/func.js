@@ -28,22 +28,6 @@ FUNC.tiles = function(query, callback) {
 	RESTBuilder.GET('https://bufferwall.com/api/ex/tiles/', query).header('x-token', CONF.token).exec(callback);
 };
 
-function replaceimages(text) {
-
-	// External
-	if (text.indexOf('https://bufferwall.com/download/') == -1)
-		return text;
-
-	var index = text.indexOf('_');
-	if (index === -1)
-		return text;
-
-	var size = text.substring(index + 1, text.indexOf('.', index)).split('x');
-	if (size.length !== 2)
-		return text;
-	return '<img src="data:image/svg+xml;base64,' + Buffer.from(SVG.format(size[0], size[1]), 'utf8').toString('base64') + '" data-src="' + text.substring(10);
-}
-
 FUNC.posts_detail = function(id, callback) {
 	RESTBuilder.GET('https://bufferwall.com/api/ex/posts/' + id).header('x-token', CONF.token).exec(function(err, response) {
 
@@ -51,9 +35,6 @@ FUNC.posts_detail = function(id, callback) {
 			callback(response[0].error, null);
 			return;
 		}
-
-		if (response && response.body)
-			response.body = response.body.replace(/<img src=".*?"/g, replaceimages);
 
 		callback(err, response);
 	});
